@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>AethelgardGame</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Kịch bản .md được đọc lúc chạy: sửa file là game đổi theo, không cần biên dịch lại. -->
+    <Content Include="Story\**\*.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

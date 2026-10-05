@@ -1,0 +1,89 @@
+@{
+    ViewData["Title"] = "Chơi";
+    ViewData["BodyClass"] = "play";
+}
+<div id="stage" class="stage">
+    <div id="bgA" class="bg"></div>
+    <div id="bgB" class="bg"></div>
+    <div id="elev" class="elev"><i></i></div>
+    <div id="vignette" class="vignette"></div>
+    <img id="sprite" class="sprite" alt="" />
+
+    <div id="bars" class="bars" hidden>
+        <div class="bar lung"><span class="lbl" id="lblL">LUNG LAY</span><div class="track"><div class="fill" id="fillL"></div></div></div>
+        <div class="bar dao"><span class="lbl">DAO ĐỘNG</span><div class="track"><div class="fill" id="fillD"></div></div></div>
+    </div>
+
+    <div id="toasts" class="toasts"></div>
+
+    <button id="wrist" class="wrist" title="Thiết bị cổ tay (N)" aria-label="Thiết bị cổ tay">
+        <svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true">
+            <rect x="7" y="15" width="34" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2.4" />
+            <rect x="13" y="19" width="14" height="10" rx="2" fill="currentColor" opacity=".35" />
+            <path d="M31 21h5M31 25h5M31 29h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M12 15l3-8h18l3 8M12 33l3 8h18l3-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+        </svg>
+        <i class="dot" id="wristDot"></i>
+    </button>
+
+    <div id="toolbar" class="toolbar">
+        <button data-act="log" title="Nhật ký (L)">Log</button>
+        <button data-act="auto" id="btnAuto" title="Tự động (A)">Auto</button>
+        <button data-act="skip" id="btnSkip" title="Bỏ qua (giữ Ctrl)">Skip</button>
+        <button data-act="save">Lưu</button>
+        <button data-act="load">Tải</button>
+        <button data-act="settings">⚙</button>
+        <button data-act="menu">Menu</button>
+    </div>
+
+    <div id="dialog" class="dialog" hidden>
+        <div id="name" class="name"></div>
+        <div id="text" class="text"></div>
+        <div id="more" class="more">▼</div>
+    </div>
+
+    <div id="choices" class="choices" hidden></div>
+
+    <div id="card" class="card" hidden><div><p class="card-k" id="cardK"></p><h2 id="cardT"></h2><p class="card-h">Chạm hoặc nhấn Cách để tiếp tục</p></div></div>
+
+    <div id="ending" class="ending" hidden></div>
+
+    <aside id="notebook" class="panel notebook" hidden>
+        <header>
+            <h3>Thiết bị cổ tay</h3>
+            <button class="x" data-close="notebook" aria-label="Đóng">✕</button>
+        </header>
+        <nav class="tabs">
+            <button data-tab="items" class="on">Vật phẩm</button>
+            <button data-tab="notes">Ghi chú</button>
+            <button data-tab="shards">Mảnh lưu trữ <b id="shardCount"></b></button>
+        </nav>
+        <section id="nbBody" class="nb-body"></section>
+    </aside>
+
+    <aside id="logPanel" class="panel" hidden>
+        <header><h3>Nhật ký</h3><button class="x" data-close="logPanel" aria-label="Đóng">✕</button></header>
+        <section id="logBody" class="log-body"></section>
+    </aside>
+
+    <aside id="savePanel" class="panel" hidden>
+        <header><h3 id="saveTitle">Lưu</h3><button class="x" data-close="savePanel" aria-label="Đóng">✕</button></header>
+        <section id="saveBody" class="save-body"></section>
+    </aside>
+
+    <aside id="setPanel" class="panel small" hidden>
+        <header><h3>Cài đặt</h3><button class="x" data-close="setPanel" aria-label="Đóng">✕</button></header>
+        <section class="set-body">
+            <label>Nhạc nền <input id="setBgm" type="range" min="0" max="1" step="0.05"></label>
+            <label>Hiệu ứng <input id="setSe" type="range" min="0" max="1" step="0.05"></label>
+            <label>Tốc độ chữ <input id="setCps" type="range" min="15" max="120" step="5"></label>
+        </section>
+    </aside>
+
+    <div id="busy" class="busy" hidden>…</div>
+</div>
+@section Scripts {
+    <script src="~/js/saves.js" asp-append-version="true"></script>
+    <script src="~/js/audio.js" asp-append-version="true"></script>
+    <script src="~/js/game.js" asp-append-version="true"></script>
+}

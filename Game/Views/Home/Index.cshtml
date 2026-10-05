@@ -1,0 +1,28 @@
+@inject IWebHostEnvironment Env
+@{
+    ViewData["Title"] = "Menu";
+    ViewData["BodyClass"] = "menu";
+}
+<div id="menu"></div>
+<div class="menu-bg"></div>
+<main class="menu-card">
+    <p class="kicker">Triết học Mác – Lênin</p>
+    <h1>AETHELGARD</h1>
+    <p class="sub">Ngày ổn định thứ 73.000</p>
+    <div class="menu-buttons">
+        <a class="btn primary" href="/Game/Play?new=1" id="btnNew">Chơi mới</a>
+        <a class="btn" href="/Game/Play" id="btnContinue" hidden>Tiếp tục</a>
+        <button class="btn" id="btnLoad">Tải ván đã lưu</button>
+        <button class="btn" id="btnChapters" hidden>Chọn chương đã qua</button>
+    </div>
+    <div id="slots" class="slots" hidden></div>
+    <p class="foot">Game giáo dục bám theo Giáo trình Triết học Mác – Lênin (2021). Nhấp chuột hoặc phím Cách để đọc tiếp.</p>
+    @if (Env.IsDevelopment())
+    {
+        <p class="foot"><a href="/Check">Trang kiểm tra (dành cho người làm game)</a></p>
+    }
+</main>
+@section Scripts {
+    <script src="~/js/saves.js" asp-append-version="true"></script>
+    <script src="~/js/menu.js" asp-append-version="true"></script>
+}

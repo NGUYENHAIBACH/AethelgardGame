@@ -1,0 +1,58 @@
+@model AethelgardGame.Controllers.CheckController.Report
+@{
+    ViewData["Title"] = "Kiểm tra";
+    ViewData["BodyClass"] = "page";
+}
+<main class="doc">
+    <h1>Kiểm tra dự án</h1>
+    <p><a href="/">← Về menu</a></p>
+
+    <h2>1. Các chương đã đọc được</h2>
+    <table>
+        <tr><th>File</th><th>Tiêu đề</th><th>Lệnh</th><th>Dòng hiện</th><th>Điểm chọn</th><th>Bộ đáp án đối chất</th><th>Mảnh mở</th></tr>
+        @foreach (var c in Model.Chapters)
+        {
+            <tr><td>@c.file</td><td>@c.title</td><td>@c.instr</td><td>@c.says</td><td>@c.choices</td><td>@c.battles</td><td>@c.shards</td></tr>
+        }
+    </table>
+    <p>Mảnh đã định nghĩa: @string.Join(", ", Model.ShardsDefined.Select(n => n.ToString("00"))).
+        Mảnh chưa có chỗ mở: @(Model.ShardsNeverOpened.Count == 0 ? "không" : string.Join(", ", Model.ShardsNeverOpened)).</p>
+
+    <h2>2. Dòng kịch bản không đọc được (@Model.Warnings.Count)</h2>
+    @if (Model.Warnings.Count == 0) { <p class="ok">Không có.</p> }
+    else { <ul class="warn">@foreach (var w in Model.Warnings) { <li>@w</li> }</ul> }
+
+    <h2>3. File tài nguyên kịch bản dùng nhưng chưa có (@Model.Missing.Count)</h2>
+    @if (Model.Missing.Count == 0) { <p class="ok">Đủ.</p> }
+    else
+    {
+        <table>
+            <tr><th>Loại</th><th>Tên</th><th>Dùng ở</th></tr>
+            @foreach (var m in Model.Missing)
+            {
+                <tr><td>@m.kind</td><td>@m.name</td><td>@string.Join(", ", m.usedIn)</td></tr>
+            }
+        </table>
+        <p>Nền chưa có thì game vẽ nền thay thế; hiệu ứng chưa có thì game tự tạo âm thay thế. Bỏ file đúng tên vào
+            <code>wwwroot/assets/bg</code> (jpg, png, webp) hoặc <code>wwwroot/assets/se</code> (mp3, ogg, wav) là game tự dùng.</p>
+    }
+
+    <h2>4. Chạy thử ngẫu nhiên</h2>
+    <p>
+        <button onclick="sim('random')">Ngẫu nhiên 500 ván</button>
+        <button onclick="sim('a')">Toàn đáp án [A]</button>
+        <button onclick="sim('c')">Toàn đáp án [C]/[Đòn]</button>
+    </p>
+    <pre id="out">Bấm nút để chạy.</pre>
+</main>
+@section Scripts {
+    <script>
+        async function sim(s) {
+            const out = document.getElementById('out');
+            out.textContent = 'Đang chạy…';
+            const r = await fetch('/Check/Simulate?runs=500&strategy=' + s + '&seed=' + (Math.random() * 1e6 | 0));
+            const j = await r.json();
+            out.textContent = JSON.stringify(j, null, 2);
+        }
+    </script>
+}
