@@ -72,7 +72,7 @@ Trong Mở đầu Cảnh 3 có một câu hát kèm chú thích `(lời hát t�
 
 **Ô tên.** Hiện "???" cho tới khi kịch bản có dòng `(Từ đây ô tên hiện "X".)`. Áp dụng cho Doran (Mở đầu, Cảnh 2) và Veritas. Vai phụ ghi thẳng tên vai (Công nhân, Bà cụ, Người trong đám đông).
 
-**Sprite.** Mỗi thẻ `[SPRITE]` thay sprite đang hiện; kịch bản không dựng hai sprite cạnh nhau. Doran, Công nhân, Bà cụ, A.L.I.C.E không có sprite, chỉ có ô tên.
+**Sprite.** Mỗi thẻ `[SPRITE]` thay sprite đang hiện; kịch bản không dựng hai sprite cạnh nhau. Doran, Công nhân, Bà cụ, A.L.I.C.E không có sprite, chỉ có ô tên. **(Câu này hết hiệu lực từ 06/10/2026: mẹ Kael và Doran có sprite, sáu người phụ có bóng. Xem `HUONG_DAN_DEV_SAN_KHAU.md` mục 2.1 và 2.11.)**
 
 **Trận đối chất (Chương 1, Cảnh 3).** Hai thanh hiện lên từ dòng "(Hai thanh hiện lên…)" cho tới hết Câu 4:
 

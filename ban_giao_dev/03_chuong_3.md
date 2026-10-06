@@ -1,3 +1,4 @@
+
 # Chương 3: Sổ cái
 
 ## Cảnh 1: Sáng Ngày 4
@@ -34,11 +35,15 @@ Kael: "Vì đói, thưa bà. Suất dưới đó giờ chỉ còn sáu phần, t
 
 Kael: "Họ thấy thế là không công bằng, nên họ không đập nữa. Hôm nay là sang ngày thứ chín."
 
+[SPRITE: Helena_Thoughtful]
+
 (Helena không đáp ngay. Bà nhìn cốc nước trước mặt mình.)
 
 Helena: "Sáu phần. Mà sáng nay loa vẫn báo khẩu phần không đổi."
 
 Helena: "Suất thì không qua tay tôi, nó nạp thẳng vào thẻ từng người. Nhưng thứ gì nó xóa thì đều qua tay tôi."
+
+[SPRITE: Helena_Neutral]
 
 (Bà mở cuốn sổ, xoay về phía anh. Mỗi dòng một ngày, một con số, một chữ ký "H.".)
 
@@ -185,6 +190,8 @@ Kael: "Tôi không biết ở xưởng lưu trữ còn ai có người nhà dư�
 
 Vane: "Thế mà nó lại vào đúng tay cậu. Tôi không biết có ai tính thế không, kỹ sư, nhưng người đã ký tên xóa rồi thì sau này khó mà mở miệng."
 
+[SPRITE: Vane_Silent]
+
 (Ông ta im một lúc lâu.)
 
 Vane: "Còn tôi thì nhận hòm mà không hỏi nó ở đâu tới. Ba đợt, đợt nào tôi cũng chỉ đếm cho đủ số ống."
@@ -196,6 +203,8 @@ Vane: "Con bà ấy thì xóa. Thợ cũ của bà ấy thì đi tiêm."
 > Xấp nhãn hòm thuốc. Chín tấm, tính cả tấm ông Vane đưa hôm qua. Ba cái ngày, ba dãy số: 4350-03, 4385-21, 4406-16.
 
 [GHI CHÚ MỚI: Ba tệp trùng ngày suất bị bớt đều về máy 2231, trong một xưởng hai chục máy]
+
+[SPRITE: Vane_Neutral]
 
 Vane: "Tám hôm nay tối nào tôi cũng ghi lên trên hai chữ 'bình thường'. Tối nay thì tôi không ghi thế được nữa."
 
@@ -231,11 +240,13 @@ Mẹ: "Cậu tới sớm. Tôi vẫn chưa đổi ý đâu, Vane."
 
 Vane: "Tôi biết. Hôm qua tôi đã bảo mai tôi không hỏi nữa, thì hôm nay tôi không tới để hỏi."
 
+[SPRITE: Vane_Silent]
+
 (Ông ta nhìn bàn tay sắt của mình một lúc lâu.)
 
 Vane: "Tám hôm nay tối nào tôi cũng ghi lên trên là dưới này bình thường."
 
-[SPRITE: Rian_Neutral]
+[SPRITE: Rian_Angry]
 
 Rian: "Ông ghi là bình thường? Thế tám ngày nay trên đó tưởng bọn tôi ngừng tay vì cái gì?"
 
@@ -243,13 +254,19 @@ Rian: "Ông ghi là bình thường? Thế tám ngày nay trên đó tưởng b�
 
 Vane: "Trên đó chỉ biết là đai không lên. Họ mà biết thêm thì người xuống đây đã không phải tôi, và người ấy không đứng nói chuyện với bà ấy tám hôm đâu."
 
+[SPRITE: Rian_Neutral]
+
 Vane: "Tối nay tôi ghi đúng cái tôi thấy: xưởng số 4 không đập, tổ trưởng không nhận thuốc. Sau đó là việc của trên, không còn là việc của tôi."
 
 Mẹ: "Thì cậu cứ ghi. Ai xuống thì cũng phải tới trước cái ghế này, mà tôi thì vẫn ngồi đây."
 
+[SPRITE: Vane_Silent]
+
 - Nếu 5-B. Vane: "Hôm qua tôi cho lính vào, tôi tưởng thế là đủ để bà gật. Cả đêm chúng nó đứng đấy mà có ai chìa tay đâu."
 
 Vane: "Tôi hết cách rồi, bà tổ trưởng. Tôi không giữ tay bà mà tiêm được, bà cũng biết thế."
+
+[SPRITE: Vane_Neutral]
 
 (Ông ta quay ra. Tới chỗ Kael thì dừng.)
 
@@ -260,6 +277,8 @@ Vane: "Từ giờ tới hết ca cậu nghĩ ra được điều gì đáng cho 
 [TRẢ: hạn sáng mai] [GIEO: dòng báo cáo hết ca, Cảnh 4]
 
 (Vane đi rồi, trong xưởng không ai nói gì.)
+
+[SPRITE: Vane tắt]
 
 Mẹ: "Con nghe cả rồi đấy."
 
@@ -285,6 +304,8 @@ Mẹ: "Hôm qua con cãi nhau với nó cả buổi, mẹ thấy con cũng có c
 - Nếu cầm Thẻ đặc phái. Vane: "Cậu khoan lên báo đã. Đợi hết ca, lúc ấy tôi có số của cả ngày cho cậu mang lên."
 
 Vane: "Nửa tổ đã đứng búa. Còn nửa kia thì hết ca hôm nay tôi ghi tên từng người gửi lên trên, tôi không đợi thêm được."
+
+[SPRITE: Me_LookAway]
 
 (Mẹ không ngẩng lên.)
 
@@ -376,6 +397,7 @@ Veritas: "Thì cậu mất một buổi sáng. Cậu đang có việc gì hay h�
 
 ## Cảnh 2: Sổ cái
 
+
 Cảnh chỉ có Kael và Veritas. Hai đoạn mở theo nơi chốn, rồi chung. Veritas hỏi; ở mỗi câu hỏi người chơi chọn một ghi chú hoặc vật phẩm đang có để trả lời. Chọn đúng thì nối được một mắt xích (so_cai +1).
 
 **Luật chọn (chung cho mọi mắt xích):**
@@ -406,6 +428,8 @@ Doran: "Xuống rồi lại lên được à. Thế là thang chở một ngư�
 Doran: "Phần hôm qua của cậu còn nguyên kia kìa. Không ai làm thay đâu."
 
 (Ông quay về máy mình. Chưa đầy mười phút sau ông đã gật gù.)
+
+[SPRITE: Doran tắt]
 
 (Kael cắm thiết bị cổ tay vào cổng đăng nhập. Lô 4.414 đang chờ, chưa ai đụng tới.)
 
@@ -638,6 +662,7 @@ Veritas: "Ở tôi. Không còn nhiều đâu, nhưng mấy hôm đi với cậu
 
 ## Cảnh 3: Cột ngày xưa
 
+
 Cảnh nối liền sau câu "...mấy hôm đi với cậu tôi nhớ lại được nhiều hơn tôi tưởng." Chỉ có Kael và Veritas. Nhạc của Cảnh 2 chạy tiếp.
 
 **Luật gắn (chung cho mọi điều):**
@@ -811,6 +836,8 @@ Kael: "...Và người ngồi trước cái lô ấy là tôi."
 
 ### Điều 5: cái cửa
 
+- Nếu bản dưới. [SPRITE: Veritas_Serious]
+
 (Veritas thôi đùa.)
 
 Veritas: "Còn một dòng nữa. Dòng này tôi vốn không định kể."
@@ -832,6 +859,8 @@ Veritas: "Tôi chỉ còn đúng một dòng có chữ 'cửa', và tôi chẳng
 Kael: "Thế thì cứ để nó đứng riêng. Một dòng, chưa bám vào đâu cả."
 
 Veritas: "Ừ. Hai trăm năm nay chưa ai đặt được cái gì cạnh nó. Cậu cũng đừng đặt bừa."
+
+- Nếu bản dưới. [SPRITE: Veritas_Hologram]
 
 [GIEO: dòng về cái cửa, Chương 5]
 
@@ -877,6 +906,7 @@ Veritas: "Ừ. Tôi cũng đang nghĩ tới chuyện ấy."
 (Ghi chú cho người làm game: cảnh có năm điều. Ở mỗi điều mở danh sách các mắt xích của Cảnh 2 cùng hai nút "Chưa gắn được vào đâu" và "Không khớp với thứ mình đang giữ", theo "Luật gắn" ở đầu cảnh. Điều 1: chỉ chọn một lần; chọn "Không khớp với thứ mình đang giữ" thì đặt cờ bac_dung và chạy đoạn "Nếu bác ngay", chọn bất cứ thứ gì khác thì chạy đoạn "Nếu không bác"; điều 1 không bao giờ vào ghi chú. Điều 2 tới điều 5: chọn sai thì chọn lại, không trừ gì. Điều 2 gắn vào mắt xích 2. Điều 3 gắn vào mắt xích 3; nếu Cảnh 2 bỏ trống mắt xích 3 thì đáp án đúng là "Chưa gắn được vào đâu" và điều ấy treo. Điều 4 gắn vào mắt xích 1 hoặc mắt xích 4, ai cũng gắn được. Điều 5 nhận hai đáp án: "Chưa gắn được vào đâu" hoặc mắt xích 2; nó không vào ghi chú. Biến mới veritas: dong_hanh khi có cờ bac_dung và gắn được điều 3; còn lại do_du. Ghi chú "Veritas kể về ngày xưa" ai cũng nhận, tên ghi chú liệt kê đúng các điều đã gắn. Mảnh 19 và 20 ai cũng nhận. Nhạc: BGM09_Investigation chạy tiếp từ Cảnh 2, tắt từ đầu điều 4 tới hết cảnh. Bản trên: nền vẫn là xưởng lưu trữ, Veritas chỉ có tiếng, mọi lời của Kael là thì thầm; bản dưới: Veritas hiện hình.)
 
 ## Cảnh 4: Đặt sổ
+
 
 Chiều Ngày 4, trước giờ lô về. Cảnh có năm lối vào theo nơi Kael đứng và người đang cầm anh, rồi tới Lựa chọn 6.
 
@@ -1134,6 +1164,8 @@ Kael: "Còn hôm suất xuống sáu phần là chín hôm trước, thưa bà."
 
 [TRẢ: Helena tự tìm dòng suất; trả một phần nếu không có ghi chú "Tệp 4406-16"]
 
+[SPRITE: Helena_Thoughtful]
+
 (Bà nhìn trang sổ, rồi nhìn hai cột chữ trên bàn.)
 
 Helena: "Vậy ra sáng nào nó cũng đọc được câu ấy là nhờ có tôi ký, rồi có cậu bấm."
@@ -1151,6 +1183,8 @@ Kael: "Còn cột này. Ngày xưa thang chở cả hàng xuống, và lò lớn
 - Nếu đã gắn điều 3 ở Cảnh 3. Kael: "Câu 'khẩu phần không đổi' thì ngày xưa là đếm kho xong rồi mới đọc."
 
 [BGM: BGM02_Tension_Debate]
+
+[SPRITE: Helena_Neutral]
 
 Helena: "Mấy điều ấy tôi không biết thật. Nhưng cậu cũng không thể biết được, Kael."
 
@@ -1201,7 +1235,11 @@ Veritas: "2318. Ống 3 thì 2305. Tôi cũng thuộc cả, thưa bà."
 
 Helena: "Chuyện này lẽ ra tôi phải báo lại cho nó ngay bây giờ."
 
+[SPRITE: Helena_Angry]
+
 Helena: "Hôm nay tôi không báo. Nhưng tôi sẽ không quên là cậu vừa đặt tôi vào chỗ ấy đâu, Kael."
+
+[SPRITE: Helena_Neutral]
 
 - Nếu veritas = dong_hanh:
   - (Bà kéo cuốn sổ ký lại, lật tới trang trắng cuối cùng, và chép cột bên trái vào đó bằng tay.)
@@ -1266,6 +1304,8 @@ Vane: "Lò thì tôi biết. Đai mỏng, suất bớt, tôi cũng biết. Tôi 
 
 - Nếu D2 hoặc D3. Kael: "Mấy tờ ghi lại những chuyện ấy thì chiều nào cũng về máy tôi, và tôi xóa. Sáng ra cái loa lại đọc là không đổi."
 
+[SPRITE: Vane_Silent]
+
 (Vane nhìn hai cột chữ. Rồi nhìn bàn tay sắt của mình.)
 
 - Nếu D1. Vane: "Vậy là cậu xóa ở trên cho cái loa có cái mà đọc. Còn tôi ở dưới này nhận hòm, rồi đứng gác cho nó."
@@ -1282,6 +1322,8 @@ Kael: "Còn cột này. Ngày xưa thang chở cả hàng xuống, và lò lớn
 - Nếu đã gắn điều 3 ở Cảnh 3. Kael: "Câu 'khẩu phần không đổi' thì ngày xưa là đếm kho xong rồi mới đọc."
 
 [BGM: BGM03_Heavy_Industrial]
+
+[SPRITE: Vane_Neutral]
 
 Vane: "Ai kể cho cậu? Cậu hai mươi mấy tuổi. Dưới này không ai nhớ quá được đời ông mình."
 

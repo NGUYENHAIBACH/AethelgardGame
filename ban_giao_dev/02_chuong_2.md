@@ -1,3 +1,4 @@
+
 # Chương 2: Tầng Đáy
 
 ## Cảnh 1: Thang hàng
@@ -25,6 +26,8 @@ A.L.I.C.E (loa): "Chào buổi sáng, Aethelgard. Hôm nay là ngày ổn địn
 Helena: "Hôm qua tôi hứa đứng lại đây, rồi lính đưa tôi đi trước. Mọi người giận tôi là phải."
 
 Helena: "Nên hôm nay tôi không nói nữa. Tôi nhờ một người của Tầng Trung."
+
+[SPRITE: Helena_Smile]
 
 (Bà quay sang Kael, nói nhỏ, vẫn mỉm cười.)
 
@@ -152,11 +155,15 @@ Veritas: "Giờ thì thế."
 
 **Nếu cầm Thẻ đặc phái của Ban Cố vấn**
 
+[SPRITE: Kael_Smile]
+
 Veritas: "Cậu đang cười một mình đấy."
 
 Kael: "Tôi đi công tác. Người đi công tác thì có quyền cười."
 
 Veritas: "Ừ. Viền vàng hợp với cậu lắm."
+
+[SPRITE: Kael_Neutral]
 
 Kael: "Cô không mỉa một câu thì không chịu được à."
 
@@ -292,9 +299,10 @@ Người bốc hàng: "Thùng nào tôi chất lên cũng đầy. Cậu có họ
 
 (Hết Cảnh 1.)
 
-(Ghi chú cho người làm game: đoạn trong thang là màn hình đen với một ô sáng nhỏ dần. Người gác thang, người bốc hàng, người phát suất không có sprite, chỉ có ô tên. Biến mới: giay_to (thong_hanh / dieu_chuyen / dac_phai), lua_chon_3 (A / B / C). Hai ghi chú của Lựa chọn 3 mở đòn ở câu 3 ("Ai chịu thiếu?") khi đối chất với Vane; "Bảng suất" mạnh hơn "Lời người bốc hàng" một bậc: nó còn mở đòn ở câu 5. Giá của 3-B và 3-C: tin tới xưởng trước Kael, Cảnh 2 mở khác đi. Sau nhánh 3-A Kael chưa biết vì sao xưởng ngừng; Cảnh 2 phải cho mọi nhánh biết. Mảnh mới báo bằng biểu tượng cổ tay nháy như Chương 1; Veritas không nói gì về việc nhận mảnh. Tác dụng của từng mảnh lên Veritas: story/veritas_va_manh.md.)
+(Ghi chú cho người làm game: đoạn trong thang là màn hình đen với một ô sáng nhỏ dần. Người gác thang có bóng `Bong_Nguoi_gac_thang`, game tự hiện khi ông nói; người bốc hàng và người phát suất chỉ có ô tên. Biến mới: giay_to (thong_hanh / dieu_chuyen / dac_phai), lua_chon_3 (A / B / C). Hai ghi chú của Lựa chọn 3 mở đòn ở câu 3 ("Ai chịu thiếu?") khi đối chất với Vane; "Bảng suất" mạnh hơn "Lời người bốc hàng" một bậc: nó còn mở đòn ở câu 5. Giá của 3-B và 3-C: tin tới xưởng trước Kael, Cảnh 2 mở khác đi. Sau nhánh 3-A Kael chưa biết vì sao xưởng ngừng; Cảnh 2 phải cho mọi nhánh biết. Mảnh mới báo bằng biểu tượng cổ tay nháy như Chương 1; Veritas không nói gì về việc nhận mảnh. Tác dụng của từng mảnh lên Veritas: story/veritas_va_manh.md.)
 
 ## Cảnh 2: Xưởng đúc số 4
+
 
 [BG: BG07_Dai_Ban_Doanh_Khang_Chien]
 
@@ -497,6 +505,8 @@ Rian: "Anh thấy, hay anh nghe cái loa nói?"
 
 **Nếu 1-B hoặc 1-C (Kael có mặt lúc ống vỡ)**
 
+[SPRITE: Rian_Serious]
+
 (Xưởng im. Rian nói nhỏ hẳn đi.)
 
 Rian: "...Mười hai người."
@@ -510,6 +520,8 @@ Thợ trẻ: "Thế giờ đập lại à? Đập bằng cái gì, bằng sáu p
 Mẹ: "Im cả đi. Nó có bảo ai đập đâu."
 
 [GHI CHÚ MỚI: Rian đã nghe chuyện mười hai người]
+
+[SPRITE: Rian_Neutral]
 
 **Nếu 1-A (Kael chỉ đếm cáng từ xa)**
 
@@ -577,12 +589,14 @@ Rian: "Bác ngồi yên đấy, đừng có đứng dậy. Còn anh thì đi."
 
 (Lối ra lò lớn hẹp và tối. Rian đi trước một quãng xa, không ngoái lại.)
 
-[SPRITE: Rian tắt] [SPRITE: Kael_Neutral] [SPRITE: Veritas_Hologram]
+[SPRITE: Rian tắt] [SPRITE: Me tắt] [SPRITE: Kael_Neutral] [SPRITE: Veritas_Serious]
 
 Veritas (rất khẽ): "Họ hát khác tôi hai chữ."
 
 - Nếu 1-A (Veritas mang Mảnh 04). Veritas: "...Hay là tôi giữ sai. Tôi cũng chẳng dám chắc nữa."
 - Nếu không. Veritas: "...Hay là chỉ còn mình tôi giữ hai chữ không ai dùng nữa."
+
+[SPRITE: Veritas_Hologram]
 
 - Nếu 3-B (Veritas mang Mảnh 09):
   - Veritas: "Mà hai suất cậu gửi ấy, rốt cuộc là của ai? Của cậu, của mẹ cậu, hay của cả tổ?"
@@ -590,9 +604,10 @@ Veritas (rất khẽ): "Họ hát khác tôi hai chữ."
 
 (Hết Cảnh 2.)
 
-(Ghi chú cho người làm game: mẹ Kael và các thợ không có sprite, chỉ có ô tên: "Mẹ", "Thợ già", "Thợ trẻ", "Chị thợ". BG07 dùng làm xưởng; nếu hình có ánh lửa thì chỉnh tối đi hoặc coi là bóng đèn, vì Cảnh 1 đã viết "bên trong không có ánh lửa". Biến mới: lua_chon_4 (A / B / C), rian_da_nghe (có / không). Lợi của 3-A: ghi chú "Lời nghe lỏm", dùng ở Chương 4. Giá của 3-B và 3-C: thợ im trước mặt Kael. 4-A không cho ghi chú hay mảnh, chỉ cộng khuynh hướng. Ghi chú "Rian đã nghe chuyện mười hai người" dùng ở Chương 4; "Bữa sáu phần" mở một câu đáp mạnh khi đối chất với Vane. Cảnh này gặt chiếc thẻ cũ của mẹ, hai suất mỗi tuần, và nửa đầu của bài hát về mưa. Veritas im suốt cảnh vì có người; thiết bị cổ tay ấm lên là dấu hiệu duy nhất.)
+(Ghi chú cho người làm game: mẹ Kael có sprite (ô tên "Mẹ", thẻ dùng tiền tố `Me`) và tự lên sân khấu khi nói; "Thợ già", "Thợ trẻ", "Chị thợ" có bóng `Bong_…`, game tự hiện khi họ nói. BG07 dùng làm xưởng; nếu hình có ánh lửa thì chỉnh tối đi hoặc coi là bóng đèn, vì Cảnh 1 đã viết "bên trong không có ánh lửa". Biến mới: lua_chon_4 (A / B / C), rian_da_nghe (có / không). Lợi của 3-A: ghi chú "Lời nghe lỏm", dùng ở Chương 4. Giá của 3-B và 3-C: thợ im trước mặt Kael. 4-A không cho ghi chú hay mảnh, chỉ cộng khuynh hướng. Ghi chú "Rian đã nghe chuyện mười hai người" dùng ở Chương 4; "Bữa sáu phần" mở một câu đáp mạnh khi đối chất với Vane. Cảnh này gặt chiếc thẻ cũ của mẹ, hai suất mỗi tuần, và nửa đầu của bài hát về mưa. Veritas im suốt cảnh vì có người; thiết bị cổ tay ấm lên là dấu hiệu duy nhất.)
 
 ## Cảnh 3: Lò lớn
+
 
 [BG: BG06_Duong_Ong_Ngam_Tang_Day] [BGM: tắt]
 
@@ -604,6 +619,8 @@ Veritas (rất khẽ): "Họ hát khác tôi hai chữ."
 
 **Nếu 4-B và Rian đã nghe chuyện mười hai người (1-B hoặc 1-C)**
 
+[SPRITE: Rian_Serious]
+
 (Rian nói nhỏ, không nhìn anh.)
 
 Rian: "Mười hai người ấy. Có ai chết không?"
@@ -611,6 +628,8 @@ Rian: "Mười hai người ấy. Có ai chết không?"
 Kael: "Lúc tôi đi thì chưa."
 
 Rian: "...Thế thì xem cái này đã. Rồi hẵng bảo tại bọn tôi."
+
+[SPRITE: Rian_Neutral]
 
 **Nếu 4-B và Rian đã gạt đi (1-A)**
 
@@ -635,6 +654,8 @@ Rian: "Ngồi chung nồi rồi thì xem cho hết. Vào đi."
 (Dưới chân lò nằm một cái khuôn đúc dài, lòng tròn, to bằng thân người. Lòng khuôn nhẵn, không một vết cháy.)
 
 (Trên vách lò có một dòng chữ đục tay: "MẺ CUỐI: 2310".)
+
+[SPRITE: Rian_Serious]
 
 Rian: "Ông tôi rót mẻ ấy."
 
@@ -716,6 +737,7 @@ Rian: "Đai làm ra tới đâu chở lên tới đó. Thừa cái nào thì qu�
   - Rian: "Lên mà bảo bà ta thế."
 
 - Nếu Rian đã nghe chuyện mười hai người:
+  - [SPRITE: Rian_Serious]
   - (Rian nói nhỏ, như nói với cái lò.)
   - Rian: "Đập nữa thì đai cũng mỏng dần thế thôi. Mòn người làm gì."
 - Nếu không. Rian: "Đập nữa thì đai cũng mỏng dần thế thôi. Dừng tay, cho trên đó biết mặt."
@@ -742,7 +764,10 @@ Thợ học việc: "Anh Rian! Ông Vane vào xưởng rồi, khiêng theo một
 
 ## Cảnh 4: Vane và Soma-X
 
+
 [BG: BG07_Dai_Ban_Doanh_Khang_Chien]
+
+[SPRITE: Kael_Neutral]
 
 (Ở cửa xưởng giờ có một người mặc đồ đen đứng gác.)
 
@@ -757,6 +782,8 @@ Thợ học việc: "Anh Rian! Ông Vane vào xưởng rồi, khiêng theo một
 Rian: "Ông Vane. Cái hòm ấy ông khiêng ở đâu tới thì khiêng về đấy."
 
 (Vane không nhìn cậu ta. Ông ta nhìn về cuối xưởng, chỗ mẹ ngồi.)
+
+[SPRITE: Rian tắt]
 
 Mẹ: "Vane. Lần này mang cả hòm à?"
 
@@ -822,7 +849,7 @@ Vane: "Kêu tám ngày rồi. Có ai tới đâu."
 
 Mẹ: "Thế sao cậu bảo trên đó cho người xuống rồi?"
 
-[SPRITE: Vane_Surprised]
+[SPRITE: Vane_Silent]
 
 (Vane không đáp. Ông ta nhìn bàn tay sắt của mình, rồi nhìn Kael.)
 
@@ -869,6 +896,7 @@ Lời của ba lựa chọn đổi theo giấy tờ; biến cộng thì như nha
 - Nếu cầm Thẻ đặc phái:
   - (Kael lấy một ống tiêm trong hòm, giơ lên.)
   - Kael: "Mọi người, ờ... Thứ này bên dãy tảo dùng cả tháng rồi. Có ai làm sao đâu."
+  - [SPRITE: Me_LookAway]
   - (Thợ trẻ nhìn ống tiêm, rồi nhìn sang mẹ. Bà quay mặt đi.)
   - Rian: "Tôi biết ngay mà, anh Tầng Trung."
 
@@ -923,9 +951,10 @@ Rian: "Hỏi với han. Anh câu giờ cho ai đấy?"
 
 (Hết Cảnh 4. Vane chưa đi. Trận đối chất nối liền ngay sau, mở theo lua_chon_5.)
 
-(Ghi chú cho người làm game: biến mới: lua_chon_5 (A / B / C), han_vane (sang_mai / ngay_bay_gio; chỉ 5-B là ngay_bay_gio). Lời của ba lựa chọn hiện theo giay_to. Ghi chú "Người đã tiêm" chỉ có ở 5-C, mở một câu đáp mạnh khi đối chất. Cả cảnh không có nhạc. Veritas im suốt cảnh và không hiện hình chiếu; thiết bị cổ tay lạnh đi là dấu hiệu duy nhất. Vane chỉ to tiếng một lần, ở 5-B của nhánh Thẻ đặc phái. Mẹ ngồi trên ghế thấp ở cuối xưởng, chỉ đứng dậy một lần ở nhánh Lệnh điều chuyển 5-A; Vane đứng giữa xưởng; cái hòm nằm trên bệ búa máy, cao ngang thắt lưng. "Thợ bể tảo" chỉ có ô tên. Ở nhánh Lệnh điều chuyển 5-A, kim không chạm vào Kael. Trong lời thoại không ai gọi tên thuốc; tên "Soma-X" chỉ dùng ở tiêu đề cảnh. Câu "bốn suất, sáu người" dời sang trận đối chất.)
+(Ghi chú cho người làm game: biến mới: lua_chon_5 (A / B / C), han_vane (sang_mai / ngay_bay_gio; chỉ 5-B là ngay_bay_gio). Lời của ba lựa chọn hiện theo giay_to. Ghi chú "Người đã tiêm" chỉ có ở 5-C, mở một câu đáp mạnh khi đối chất. Cả cảnh không có nhạc. Veritas im suốt cảnh và không hiện hình chiếu; thiết bị cổ tay lạnh đi là dấu hiệu duy nhất. Vane chỉ to tiếng một lần, ở 5-B của nhánh Thẻ đặc phái. Mẹ ngồi trên ghế thấp ở cuối xưởng, chỉ đứng dậy một lần ở nhánh Lệnh điều chuyển 5-A; Vane đứng giữa xưởng; cái hòm nằm trên bệ búa máy, cao ngang thắt lưng. "Thợ bể tảo" có bóng `Bong_Tho_be_tao`, game tự hiện khi anh ta nói. Ở nhánh Lệnh điều chuyển 5-A, kim không chạm vào Kael. Trong lời thoại không ai gọi tên thuốc; tên "Soma-X" chỉ dùng ở tiêu đề cảnh. Câu "bốn suất, sáu người" dời sang trận đối chất.)
 
 ## Cảnh 5: Đối chất với Vane
+
 
 Năm câu hỏi, mỗi câu hai lượt. Lượt một: Vane đưa lý lẽ, Kael đáp. Nếu Kael lật lại được lý lẽ ấy ([C]) thì Vane vặn lại, và Kael phải đáp lần hai. Dòng "Lập trường" chỉ dành cho người làm game, người chơi không thấy.
 
@@ -1104,8 +1133,8 @@ Lượt hai:
 - Kael: "Ông bảo thùng lên vẫn đủ sáu. Tấm bảng ngoài quầy lại gạch ba lần trong bốn tháng."
 - Kael: "Thùng không vơi mà phần thì vơi. Chỗ vơi ấy đi đâu?"
 - Thợ già: "Trên nó thì không vơi. Hai suất thằng Ke gửi, tuần nào cũng đủ hai."
+- [SPRITE: Vane_Silent]
 - (Vane im rất lâu.)
-- [SPRITE: Vane_Surprised]
 - Vane: "Dưới bớt ba lần. Thùng lên vẫn sáu. Trên không bớt."
 - → Lung lay +2. Tầng Đáy +1. [TRẢ: suất Tầng Đáy đi đâu]
 
@@ -1114,6 +1143,7 @@ Lượt hai:
 - Kael: "Ông bảo thùng lên vẫn đủ sáu. Anh bốc hàng ở chân thang thì bảo tôi: chất lên thì đầy, lĩnh về thì vơi."
 - Kael: "Chỗ vơi ấy đi đâu?"
 - Thợ già: "Trên nó thì không vơi. Hai suất thằng Ke gửi, tuần nào cũng đủ hai."
+- [SPRITE: Vane_Silent]
 - (Vane im rất lâu.)
 - Vane: "Thùng đầy. Trên đủ."
 - → Lung lay +2. Tầng Đáy +1.
@@ -1128,7 +1158,7 @@ Vane: "Xưởng này có bà ấy. Ngoài quầy thì không có bà nào."
 
 Vane: "Không ai gác thì đứa khỏe giật bát đứa yếu ngay trước quầy. Loạn thì chết nhiều hơn đói."
 
-[SPRITE: Rian_Neutral]
+[SPRITE: Rian_Angry]
 
 Rian: "Gác cho ai? Ông là chó giữ nhà cho tầng trên."
 
@@ -1147,6 +1177,7 @@ Rian: "Gác cho ai? Ông là chó giữ nhà cho tầng trên."
 - Rian: "Nghe chưa, ông Vane."
 - [SPRITE: Vane_Aggressive]
 - Vane: "Tôi đẻ ở tầng này. Tay tôi nằm lại ở xưởng này."
+- [SPRITE: Vane tắt]
 - Mẹ: "Rian."
 - → Lung lay −1. Lập trường: chỉ thấy cái để đập bỏ, chưa biết lấy gì thay.
 
@@ -1178,6 +1209,8 @@ Lượt hai:
 (Lập trường của [C]: người giữ trật tự làm việc chung thật, nhưng không đứng ngoài. Trật tự nào cũng là trật tự của một cách chia; và trật tự ấy sẵn sàng xóa cả con số mà chính người giữ nó cần.)
 
 ### Câu 5: Đổi được cái gì?
+
+[SPRITE: Rian_Neutral]
 
 [SPRITE: Vane_Neutral]
 
@@ -1280,9 +1313,10 @@ Kael: "Ông ấy... nói có lý, mẹ ạ. Hết thấy đói thì đỡ khổ.
 
 (Hết Cảnh 5.)
 
-(Ghi chú cho người làm game: thứ tự xét kết quả như trận Helena. Ngưỡng: Lung lay 6, Dao động 6. [Giữ lời] không cho bên nào điểm: Kael đúng ý nhưng không có gì trong tay, Vane không nhường. 5-A vào trận với Dao động +1, không có lời thoại báo. Luôn hỏi đủ năm câu. Mỗi câu: chọn [A] hoặc [B] thì câu hỏi kết thúc; chọn [C] thì chưa có điểm, Vane vặn lại, rồi hiện các đáp án lượt hai. [Đòn] chỉ hiện khi giữ ghi chú tương ứng; nếu giữ hai ghi chú cùng mở đòn của một câu thì hiện bản đứng trước trong kịch bản. Lời các đáp án không đổi theo Lựa chọn 5 hay giấy tờ. Ghi chú "Bảng suất Tầng Đáy" mở đòn ở cả câu 3 và câu 5; câu 5 chỉ có một đòn. Ở câu 3, chỉ đòn "Bảng suất" khiến Vane tự tính đủ ba vế. Ghi chú "Lò lớn", "Số đo đai vá" và "Rian đã nghe chuyện mười hai người" không mở đòn nào trong trận; "Số đo đai vá" để dành Chương 3, "Rian đã nghe" dùng ở Chương 4. Câu 1 chỉ có một đòn (cần 4-C). Tầng Đáy +1 mỗi lần một người trong xưởng đứng ra xác nhận lời Kael bằng điều chính họ biết. Đòn câu 4 không tự đổi biến rian_da_nghe; biến này có thể đổi ở Cảnh 6 ("Một câu của Rian"). Veritas im suốt trận và không hiện hình chiếu. Vane_Aggressive chỉ dùng ở câu 4 đáp án [B]; Vane_Surprised chỉ dùng ở câu 3 đòn "Bảng suất". BGM03 chạy từ câu 1 tới hết trận. Vị trí: mẹ ở cuối xưởng (đang đứng nếu 5-B hoặc Lệnh điều chuyển 5-A), Vane đứng cạnh bệ búa, cái hòm mở trên bệ búa, hai người đồ đen ở cửa xưởng hoặc đã vào trong nếu 5-B. Tấm bảng suất: bốn con số cách nhau chín tuần, năm tuần, ba tuần; số cuối ghi từ tám ngày trước.)
+(Ghi chú cho người làm game: thứ tự xét kết quả như trận Helena. Ngưỡng: Lung lay 6, Dao động 6. [Giữ lời] không cho bên nào điểm: Kael đúng ý nhưng không có gì trong tay, Vane không nhường. 5-A vào trận với Dao động +1, không có lời thoại báo. Luôn hỏi đủ năm câu. Mỗi câu: chọn [A] hoặc [B] thì câu hỏi kết thúc; chọn [C] thì chưa có điểm, Vane vặn lại, rồi hiện các đáp án lượt hai. [Đòn] chỉ hiện khi giữ ghi chú tương ứng; nếu giữ hai ghi chú cùng mở đòn của một câu thì hiện bản đứng trước trong kịch bản. Lời các đáp án không đổi theo Lựa chọn 5 hay giấy tờ. Ghi chú "Bảng suất Tầng Đáy" mở đòn ở cả câu 3 và câu 5; câu 5 chỉ có một đòn. Ở câu 3, chỉ đòn "Bảng suất" khiến Vane tự tính đủ ba vế. Ghi chú "Lò lớn", "Số đo đai vá" và "Rian đã nghe chuyện mười hai người" không mở đòn nào trong trận; "Số đo đai vá" để dành Chương 3, "Rian đã nghe" dùng ở Chương 4. Câu 1 chỉ có một đòn (cần 4-C). Tầng Đáy +1 mỗi lần một người trong xưởng đứng ra xác nhận lời Kael bằng điều chính họ biết. Đòn câu 4 không tự đổi biến rian_da_nghe; biến này có thể đổi ở Cảnh 6 ("Một câu của Rian"). Veritas im suốt trận và không hiện hình chiếu. Vane_Aggressive chỉ dùng ở câu 4 đáp án [B]; Vane_Silent dùng ở câu 3, cả hai đòn ("Bảng suất" và "Lời người bốc hàng"), lúc ông im rất lâu. BGM03 chạy từ câu 1 tới hết trận. Vị trí: mẹ ở cuối xưởng (đang đứng nếu 5-B hoặc Lệnh điều chuyển 5-A), Vane đứng cạnh bệ búa, cái hòm mở trên bệ búa, hai người đồ đen ở cửa xưởng hoặc đã vào trong nếu 5-B. Tấm bảng suất: bốn con số cách nhau chín tuần, năm tuần, ba tuần; số cuối ghi từ tám ngày trước.)
 
 ## Cảnh 6: Sau cái hòm (kết chương)
+
 
 Cảnh nối liền sau trận đối chất, không có lựa chọn mới. Đoạn 1 đi theo kết quả trận. Đoạn 2 đi theo giấy tờ. Đoạn 3 là Kael và Veritas.
 
@@ -1336,7 +1370,7 @@ Vane: "Về chỗ tôi đếm được."
 
 (Thợ trẻ ngồi nhìn những ống tiêm xếp hàng. Thợ già nắm vai cậu ta, xoay về phía cái nồi.)
 
-[SPRITE: Rian_Neutral]
+[SPRITE: Rian_Serious]
 
 Rian: "Đêm nay tôi ngủ ở xưởng, bác ạ."
 
@@ -1372,7 +1406,7 @@ Vane: "Số còn lại: mai."
 
 **Một câu của Rian (thắng hoặc bất phân; chỉ khi Kael đã dùng đòn ở câu 4 và trước đó không chọn 4-B)**
 
-[SPRITE: Rian_Neutral]
+[SPRITE: Rian_Serious]
 
 Rian: "Cái ống trên đó. Vỡ vì không có đai à?"
 
@@ -1444,6 +1478,8 @@ Dẫn chuyện: Mẹ anh là người cuối cùng trong xưởng chưa chìa ta
 
 **Nếu Kael bị thuyết phục**
 
+[SPRITE: Kael_Neutral] [SPRITE: Me_LookAway]
+
 (Mẹ không nhìn anh. Bà múc nửa bát của mình sang bát cậu thợ học việc.)
 
 (Kael đứng đó một lúc. Bà không ngẩng lên.)
@@ -1466,11 +1502,15 @@ Veritas: "Tôi không biết là tôi làm được thế."
 
 (Hình chiếu của cô chập chờn một nhịp.)
 
+[SPRITE: Veritas_Serious]
+
 Veritas: "Bài ấy tôi giữ hai trăm năm. Chưa lần nào tôi cần có ai hát nó."
 
 Veritas: "Hôm nay thì cần."
 
 (Kael không biết đáp gì. Cô tự nói sang chuyện khác.)
+
+[SPRITE: Veritas_Hologram]
 
 Veritas: "Mà cái giáp của ông ta. Trên ngực có dập chữ: VOLKOV 01."
 
@@ -1496,12 +1536,14 @@ Veritas: "Tên cái giáp đấy. Hồi tôi còn mới người ta còn làm ra
 **Câu cuối chương**
 
 - Nếu cầm Giấy thông hành hoặc Thẻ đặc phái, và thắng:
+  - [SPRITE: Veritas tắt]
   - (Kael đi về phía chân thang. Bốn người đồ đen nhìn anh. Không ai bước ra.)
   - [SE: SE06_Cua_Thep_Mo_Ra]
   - (Cửa lồng thang mở. Trên sàn, cái ô sơn trắng vẫn để trống.)
   - Kael: "Lên lại hóa ra cũng dễ."
   - Veritas: "Ừ. Giờ cậu nghĩ xem ra khỏi thang thì nói gì."
 - Nếu cầm Giấy thông hành hoặc Thẻ đặc phái, và bất phân:
+  - [SPRITE: Veritas tắt]
   - (Kael đi về phía chân thang. Một người đồ đen đòi xem giấy, lật đi lật lại rồi mới trả.)
   - [SE: SE06_Cua_Thep_Mo_Ra]
   - (Cửa lồng thang mở. Kael ngoái lại phía xưởng một lần, rồi bước vào.)

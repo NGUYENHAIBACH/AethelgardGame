@@ -34,7 +34,7 @@ Chương này không sửa gì ở Mở đầu, Chương 1, Chương 2.
 | `(chỉ T2)`, `(T2: chỉ khi sổ đủ)` sau nhãn `[6-B]`, `[6-C]` | **Không hiện.** Điều kiện để nút ấy xuất hiện |
 | `(Ghi chú cho người làm game: …)` cuối mỗi cảnh | **Không hiện.** Đọc kỹ: mỗi cảnh có một đoạn, tài liệu này tóm lại chứ không thay nó |
 
-**Ô tên** không có sprite: Mẹ, Doran, Thợ học việc, Người gác thang, Dẫn chuyện, A.L.I.C.E (loa).
+**Ô tên** không có sprite: Mẹ, Doran, Thợ học việc, Người gác thang, Dẫn chuyện, A.L.I.C.E (loa). **(Câu này hết hiệu lực từ 06/10/2026: mẹ Kael và Doran có sprite, sáu người phụ có bóng. Xem `HUONG_DAN_DEV_SAN_KHAU.md` mục 2.1 và 2.11.)**
 
 **Veritas.** `Veritas (rất khẽ)` vẫn như Chương 2: có tiếng, không có sprite. Ở bản trên, suốt Cảnh 2 và Cảnh 3 cô chỉ có tiếng và mọi lời của Kael là thì thầm (có thể cho chữ nhỏ hoặc nghiêng). Từ nhịp 3 của nhánh 6-C cô hiện hình trước mặt người khác: đây là lần đầu trong game, đừng làm mất bằng cách cho cô hiện sớm hơn.
 

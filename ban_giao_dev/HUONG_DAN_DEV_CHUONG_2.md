@@ -47,7 +47,7 @@ Không có thay đổi nào khác ở Mở đầu và Chương 1.
 | Dòng "Năm câu hỏi, mỗi câu hai lượt…" dưới tiêu đề Cảnh 5, dòng "Cảnh nối liền sau trận…" dưới tiêu đề Cảnh 6, dòng "Lời của ba lựa chọn đổi theo giấy tờ…" dưới Lựa chọn 5 | **Không hiện.** Ghi chú soạn thảo |
 | `**Một câu của Rian (…)**`, `**Câu cuối chương**`, `**Cái hòm (chung cho mọi nhánh)**` và các dòng in đậm tương tự | **Không hiện.** Tên đoạn và điều kiện |
 
-**Ô tên.** Rian hiện "???" cho tới dòng `(Từ đây ô tên hiện "Rian".)`. Các vai chỉ có ô tên, không có sprite: Mẹ, Thợ già, Thợ trẻ, Chị thợ, Thợ học việc, Thợ bể tảo, Người gác thang, Người bốc hàng, Người phát suất.
+**Ô tên.** Rian hiện "???" cho tới dòng `(Từ đây ô tên hiện "Rian".)`. Các vai chỉ có ô tên, không có sprite: Mẹ, Thợ già, Thợ trẻ, Chị thợ, Thợ học việc, Thợ bể tảo, Người gác thang, Người bốc hàng, Người phát suất. **(Câu này hết hiệu lực từ 06/10/2026: mẹ Kael và Doran có sprite, sáu người phụ có bóng. Xem `HUONG_DAN_DEV_SAN_KHAU.md` mục 2.1 và 2.11.)**
 
 **Lời hát.** Hai câu hát trong Cảnh 2 và Cảnh 4 ("...lò đỏ bên thềm...", "...con ngủ đi...") là lời tạm, để dạng dễ thay.
 

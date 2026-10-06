@@ -1,3 +1,4 @@
+
 # Mở đầu: Tệp không chịu xóa
 
 Bản 3. Cảnh 1 giữ nguyên. Cảnh 2 và 3 viết lại: giải thích "suất", thêm túi đồ, tệp tự mở thay vì Kael mở, lý do xóa được ở nhánh A, giấu tên nhân vật cho tới khi được giới thiệu. Ký hiệu [VẬT PHẨM] và [GHI CHÚ] là thông báo người chơi nhìn thấy; [GIEO] chỉ dành cho người làm game.
@@ -44,6 +45,8 @@ Kael (nghĩ): Ngày thứ bảy mươi ba nghìn. Hình như hôm qua cũng bả
 >
 > Năm mười lăm tuổi mình đỗ kỳ tuyển kỹ sư, cả khu xưởng kéo ra tiễn. Mẹ dúi cái thẻ này vào tay, bảo giữ lấy cho nhớ mình từ đâu ra.
 
+[SPRITE: Doran_Neutral]
+
 ???: "Lại ngắm cái thẻ cũ đấy à, Kael?"
 
 Kael: "Cháu chào chú Doran. Thẻ của mẹ cháu, để trong ví cho đỡ nhớ thôi."
@@ -61,6 +64,8 @@ Doran: "Mà gửi thì gửi, chứ mười một năm rồi cậu đã xuống 
 Kael: "Xuống thì dễ chú ạ. Lên lại mới khó. Chú đã thấy thang hàng chở ai lên hai lần chưa?"
 
 (Doran không trả lời. Ông quẹt thẻ rồi đi trước.)
+
+[SPRITE: Doran tắt]
 
 Kael (nghĩ): Ở trên này chỉ cần sai một lần là người ta có cớ trả mình về. Nên thôi, cứ cúi đầu mà làm cho xong việc.
 
@@ -83,6 +88,8 @@ Kael: "Tò mò thì có được thêm suất nào không chú?"
 Doran: "Không. Mất suất thì có."
 
 Kael: "Thế thì cháu không tò mò."
+
+[SPRITE: Doran tắt]
 
 [SE: SE03_Glitch_Loi_He_Thong]
 
@@ -125,6 +132,8 @@ Kael (nghĩ): Hạn thay năm 2310. Giờ là năm 2350. Trễ bốn mươi năm
 (Kael vội vặn nhỏ loa.)
 
 Kael (nghĩ): "Mưa"? Chữ gì lạ vậy. Nghe như tên một món ăn.
+
+[SPRITE: Kael_Neutral]
 
 (Hết ca. Doran đã về. Tệp vẫn mở trên màn hình, mà theo quy định, lô chưa sạch thì kỹ sư chưa được về.)
 
