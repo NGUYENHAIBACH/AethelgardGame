@@ -114,6 +114,11 @@ body.play { overflow: hidden; }
   transform: translateX(-50%); opacity: 0; transition: opacity .25s; pointer-events: none;
   filter: drop-shadow(0 6px 24px rgba(0, 0, 0, .7));
 }
+.sprite { transition: opacity .25s, left .4s ease, filter .3s; }
+.sprite.pos-l { left: 29%; }
+.sprite.pos-r { left: 71%; }
+.sprite.show.dim { opacity: .9; filter: brightness(.42) saturate(.6) drop-shadow(0 6px 24px rgba(0, 0, 0, .7)); }
+.sprite.holo.show.dim { animation: none; filter: brightness(.45) saturate(.7) drop-shadow(0 0 14px rgba(61, 230, 200, .4)); }
 .sprite.show { opacity: 1; }
 .sprite.show.voice { opacity: 0; }
 .sprite.holo.show { opacity: .86; filter: drop-shadow(0 0 22px rgba(61, 230, 200, .75)) saturate(1.2); animation: holo 3.2s infinite; }

@@ -4,7 +4,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const E = {
-    stage: $('stage'), bgA: $('bgA'), bgB: $('bgB'), elev: $('elev'), sprite: $('sprite'),
+    stage: $('stage'), bgA: $('bgA'), bgB: $('bgB'), elev: $('elev'), sprite: $('sprite'), spriteL: $('spriteL'),
     bars: $('bars'), fillL: $('fillL'), fillD: $('fillD'), lblL: $('lblL'),
     toasts: $('toasts'), wrist: $('wrist'), dot: $('wristDot'),
     dialog: $('dialog'), name: $('name'), text: $('text'), more: $('more'),
@@ -48,6 +48,7 @@
   function setBg(name, instant) {
     if (name === S.curBg) return;
     S.curBg = name;
+    castStale = true;
     const next = S.bgFront === 'A' ? E.bgB : E.bgA, prev = S.bgFront === 'A' ? E.bgA : E.bgB;
     S.bgFront = S.bgFront === 'A' ? 'B' : 'A';
     next.className = 'bg';
@@ -63,18 +64,47 @@
     setTimeout(() => { next.classList.add('on'); prev.classList.remove('on'); }, 20);
   }
 
-  function setSprite(name) {
-    S.scene.sprite = name;
-    if (!name || !fileFor(manifest.sprites, name)) { E.sprite.classList.remove('show'); return; }
-    const f = fileFor(manifest.sprites, name);
+  // Hai nhân vật cùng hiện: Kael bên trái, người đối thoại bên phải; ai đang nói thì sáng, người kia tối đi.
+  const cast = { L: null, R: null };
+  let castStale = false;
+  const charOf = n => (n || '').split('_')[0];
+
+  function paintSlot(k, name) {
+    const el = k === 'L' ? E.spriteL : E.sprite;
+    const f = name && fileFor(manifest.sprites, name);
+    if (!f) { el.dataset.base = ''; return; }
     const img = new Image();
     img.onload = () => {
-      if (S.scene.sprite !== name) return;
-      E.sprite.src = img.src;
-      E.sprite.className = 'sprite show ' + (name.startsWith('Veritas') ? 'holo ' : '') + (name === 'Veritas_Glitch' ? 'glitch' : '');
-      if (S.hideVoice) E.sprite.classList.add('voice');
+      if (cast[k] !== name) return;
+      el.src = img.src;
+      el.dataset.base = 'sprite ' + (name.startsWith('Veritas') ? 'holo ' : '') + (name === 'Veritas_Glitch' ? 'glitch ' : '');
+      updateFocus();
     };
     img.src = '/assets/sprites/' + f;
+  }
+
+  function setSprite(name) {
+    S.scene.sprite = name;
+    if (castStale) { cast.L = cast.R = null; castStale = false; }   // đổi nền = đổi cảnh: bỏ người cũ
+    if (!name) cast.L = cast.R = null;
+    else cast[charOf(name) === 'Kael' ? 'L' : 'R'] = name;
+    paintSlot('L', cast.L); paintSlot('R', cast.R);
+    updateFocus();
+  }
+
+  function updateFocus() {
+    const nm = S.speaker || '';
+    const both = !!(cast.L && cast.R);
+    const match = k => { const c = charOf(cast[k]); return !!c && (nm === c || (nm === 'A.L.I.C.E' && c === 'ALICE')); };
+    const voice = !!S.hideVoice && !!cast.R;   // chỉ có tiếng, không hiện người
+    const anyMatch = !voice && (match('L') || match('R'));
+    [['L', E.spriteL], ['R', E.sprite]].forEach(([k, el]) => {
+      const on = !!cast[k] && !!el.dataset.base;
+      el.className = (el.dataset.base || 'sprite ') + (on ? 'show ' : '')
+        + (both ? (k === 'L' ? 'pos-l ' : 'pos-r ') : '')
+        + (both && anyMatch && !match(k) ? 'dim ' : '')
+        + (voice && k === 'R' ? 'voice ' : '');
+    });
   }
 
   function setBars(on, lmax, dmax, who) {
@@ -197,7 +227,8 @@
     E.name.className = 'name ' + nameClass(nm);
     E.name.style.visibility = nm ? 'visible' : 'hidden';
     S.hideVoice = !!st.hs;
-    E.sprite.classList.toggle('voice', S.hideVoice);
+    S.speaker = nm;
+    updateFocus();
     if (st.teal) blinkWrist(true);
     if (st.loud) { E.stage.classList.remove('shake'); void E.stage.offsetWidth; E.stage.classList.add('shake'); }
 

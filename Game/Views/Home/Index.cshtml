@@ -1,28 +1,73 @@
 @inject IWebHostEnvironment Env
 @{
     ViewData["Title"] = "Menu";
-    ViewData["BodyClass"] = "menu";
+    ViewData["BodyClass"] = "menu home";
 }
-<div id="menu"></div>
-<div class="menu-bg"></div>
-<main class="menu-card">
-    <p class="kicker">Triết học Mác – Lênin</p>
-    <h1>AETHELGARD</h1>
-    <p class="sub">Ngày ổn định thứ 73.000</p>
-    <div class="menu-buttons">
-        <a class="btn primary" href="/Game/Play?new=1" id="btnNew">Chơi mới</a>
-        <a class="btn" href="/Game/Play" id="btnContinue" hidden>Tiếp tục</a>
-        <button class="btn" id="btnLoad">Tải ván đã lưu</button>
-        <button class="btn" id="btnChapters" hidden>Chọn chương đã qua</button>
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+<script>
+  if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    var h = document.documentElement; h.classList.add('intro');
+    setTimeout(function () { h.classList.remove('intro'); h.classList.remove('intro-play'); }, 5000);
+  }
+</script>
+<div class="frame">
+  <div class="bgs" id="bgs" aria-hidden="true"></div>
+  <div class="veil"></div>
+  <div class="kael" aria-hidden="true"></div>
+
+  <header class="bar" data-open="false">
+    <a class="brand" href="/" aria-label="Aethelgard — trang chủ">
+      <svg viewBox="0 0 26.9 16.6" fill="none" aria-hidden="true">
+        <path d="M2 14.2a11.3 11.3 0 0 1 22.6 0Z" fill="currentColor"/>
+        <path d="M0 15.6h26.9" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+        <path d="M13.3 2.9V0M6 5.6 4.4 3.4M20.6 5.6l1.6-2.2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+      <span>AETHELGARD</span>
+    </a>
+    <nav class="links" aria-label="Chính">
+      <a href="/Game/Play?new=1" data-click="btnNew">Chơi mới</a>
+      <a href="#" data-click="btnLoad">Tải ván đã lưu</a>
+      <a href="#" data-click="btnChapters" hidden>Chọn chương</a>
+      @if (Env.IsDevelopment()) { <a href="/Check">Trang kiểm tra</a> }
+    </nav>
+    <div class="actions">
+      <a class="lb ghost" href="#" data-click="btnLoad">Tải ván</a>
+      <a class="lb solid" href="/Game/Play?new=1" data-click="btnNew">Chơi mới</a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu-sheet">
+        <svg viewBox="0 0 20 14" fill="none" aria-hidden="true"><path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
     </div>
-    <div id="slots" class="slots" hidden></div>
-    <p class="foot">Game giáo dục bám theo Giáo trình Triết học Mác – Lênin (2021). Nhấp chuột hoặc phím Cách để đọc tiếp.</p>
-    @if (Env.IsDevelopment())
-    {
-        <p class="foot"><a href="/Check">Trang kiểm tra (dành cho người làm game)</a></p>
-    }
-</main>
+    <nav class="sheet" id="menu-sheet" aria-label="Menu">
+      <a href="#" data-click="btnLoad">Tải ván đã lưu</a>
+      <a href="#" data-click="btnChapters" hidden>Chọn chương</a>
+      @if (Env.IsDevelopment()) { <a href="/Check">Trang kiểm tra</a> }
+      <a class="lb solid" href="/Game/Play?new=1" data-click="btnNew">Chơi mới</a>
+    </nav>
+  </header>
+
+  <div class="screen">
+    <main class="hero">
+      <a class="pill" href="/Game/Play?new=1" data-click="btnNew">
+        <span class="chip">Mới</span>
+        <span class="pill-label">Học triết qua trò chơi</span>
+        <svg viewBox="0 0 9.5 8" fill="none" aria-hidden="true"><path d="M0.7 4H8.8M5.6 0.75 8.85 4 5.6 7.25" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <h1><span class="ln"><span class="ln-i">Aethelgard</span></span><span class="ln"><span class="ln-i">Ngày thứ 73.000</span></span></h1>
+      <p>Visual novel Triết học Mác – Lênin: lập luận, lựa chọn và gánh lấy hậu quả trong thành phố kín dưới lòng đất.</p>
+      <div class="cta">
+        <a class="lb solid" href="/Game/Play?new=1" id="btnNew">Chơi mới</a>
+        <a class="lb ghost" href="/Game/Play" id="btnContinue" hidden>Tiếp tục</a>
+        <button class="lb ghost" id="btnLoad" type="button">Tải ván đã lưu</button>
+        <button id="btnChapters" type="button" hidden class="sr">Chọn chương đã qua</button>
+      </div>
+    </main>
+  </div>
+
+  <div id="slots" class="slots" hidden></div>
+  <p class="hint">Cách / Enter: đọc tiếp · Ctrl: bỏ qua · A: tự động · L: nhật ký · N: sổ tay</p>
+</div>
 @section Scripts {
     <script src="~/js/saves.js" asp-append-version="true"></script>
     <script src="~/js/menu.js" asp-append-version="true"></script>
+    <script src="~/js/home.js" asp-append-version="true"></script>
 }
