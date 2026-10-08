@@ -107,7 +107,7 @@ public sealed class CheckController : Controller
             try
             {
                 var b = engine.Start();
-                for (int guard = 0; guard < 400; guard++)
+                for (int guard = 0; guard < 3000; guard++)
                 {
                     var st = GameEngine.Deser(b.State);
                     // ghi nhận mọi lệnh đã đi qua: chạy lại từ StartState không cần; dùng bước đã phát
@@ -231,13 +231,14 @@ public sealed class CheckController : Controller
 
     /// <summary>GET /Check/Transcript?keys=A,C,B,A,A,C,D,...  Chơi theo danh sách phím và in ra toàn bộ chữ người chơi sẽ thấy.
     /// Điểm chọn: A/B/C. Đối chất: A/B/C/L(Lùi)/G(Giữ lời)/D(Đòn); thiếu phím thì chọn đáp án đầu tiên.</summary>
-    public IActionResult Transcript(string keys = "", int chapters = 99)
+    /// Thêm &state=1: trả về trạng thái ván (JSON) ở điểm dừng đầu tiên sau khi hết phím, để mở thẳng ván ấy trong game mà thử giao diện.
+    public IActionResult Transcript(string keys = "", int chapters = 99, int state = 0)
     {
         lib.Refresh();
         var ks = new Queue<string>((keys ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
         var sb = new System.Text.StringBuilder();
         var b = engine.Start();
-        for (int guard = 0; guard < 400; guard++)
+        for (int guard = 0; guard < 3000; guard++)
         {
             foreach (var s in b.Steps)
             {
@@ -255,7 +256,11 @@ public sealed class CheckController : Controller
                             _ => $"  {nm}{(kind == "think" ? " (nghĩ)" : kind == "loa" ? " (loa)" : "")}: {s["text"]}",
                         });
                         break;
-                    case "bg": case "bgm": case "se": case "spr": sb.AppendLine($"  <{t} {s["v"]}>"); break;
+                    case "bg": case "bgm": case "se": sb.AppendLine($"  <{t} {s["v"]}>"); break;
+                    case "stage":
+                        sb.AppendLine("  <sân khấu: " + string.Join(", ", ((List<Dictionary<string, object?>>)s["v"]!).Select(a => a["n"] + "_" + a["e"]))
+                            + (s["holo"] != null ? " + hình chiếu Veritas_" + s["holo"] : "") + (s["shadow"] != null ? " + bóng " + s["shadow"] : "") + ">");
+                        break;
                     case "item": sb.AppendLine($"  <VẬT PHẨM MỚI: {s["name"]}> {s["desc"]}"); break;
                     case "note": sb.AppendLine($"  <GHI CHÚ MỚI: {s["name"]}>"); break;
                     case "shard":
@@ -267,6 +272,8 @@ public sealed class CheckController : Controller
                                 sb.AppendLine($"      [{p["kind"]}{(p.TryGetValue("hi", out var hi) && hi != null ? ", hi=" + hi : "")}] {p["text"]}");
                         }
                         break;
+                    case "unitem": sb.AppendLine($"  <VẬT PHẨM RỜI TÚI: {s["name"]}>"); break;
+                    case "amb": sb.AppendLine($"  <tiếng lặp {s["v"]}>"); break;
                     case "bar": sb.AppendLine($"  <thanh Lung lay={s["l"]} Dao động={s["d"]}>"); break;
                     case "bars": sb.AppendLine($"  <hai thanh {(((bool)s["on"]!) ? "hiện" : "ẩn")}>"); break;
                     case "card": sb.AppendLine($"=== {s["text"]} ==="); break;
@@ -275,7 +282,16 @@ public sealed class CheckController : Controller
             }
             var st = GameEngine.Deser(b.State);
             var type = (string)b.Pause["type"]!;
-            if (type == "end") { sb.AppendLine("━━ " + b.Pause["title"] + " ━━"); foreach (var l in (List<string>)b.Pause["lesson"]!) sb.AppendLine("  > " + l); break; }
+            if (type == "end")
+            {
+                if (state == 1) return Content(b.StartState, "application/json; charset=utf-8");
+                sb.AppendLine("━━ " + b.Pause["title"] + " ━━");
+                foreach (var l in (List<string>)b.Pause["lesson"]!) sb.AppendLine("  > " + l);
+                if (b.Pause["trend"] is List<string> tr) { sb.AppendLine("  [Lối bạn hay chọn]"); foreach (var l in tr) sb.AppendLine("  > " + l); }
+                if (b.Pause["final"] is List<string> fl) sb.AppendLine("  [Hình cuối] " + string.Join(", ", fl));
+                sb.AppendLine("  [Quay lại] " + string.Join(", ", ((List<Dictionary<string, object?>>)b.Pause["retry"]!).Select(x => x["label"])));
+                break;
+            }
             if (type is "finished") break;
             if (type == "chapterEnd")
             {
@@ -284,6 +300,7 @@ public sealed class CheckController : Controller
                 b = engine.Continue(st); continue;
             }
             var ins = lib.Chapters[st.Chapter].Code[st.Pc];
+            if (state == 1 && ks.Count == 0) return Content(b.StartState, "application/json; charset=utf-8");
             string key = ks.Count > 0 ? ks.Dequeue() : "";
             int pick = 0;
             if (ins is AskChoiceI ac)
@@ -298,6 +315,14 @@ public sealed class CheckController : Controller
                 string Map(string k) => k switch { "L" => "Lùi", "G" => "Giữ lời", "D" => "Đòn", _ => k };
                 pick = Math.Max(0, el.FindIndex(o => o.Key == Map(key)));
                 sb.AppendLine("\n>>> ĐÁP ÁN: " + string.Join(" | ", el.Select(o => o.Key + (o.Variant != null ? "/" + o.Variant : "") + "=" + Shorten(o.Text))) + $"  → chọn {el[pick].Key}");
+            }
+            else
+            {
+                // màn chọn ghi chú, màn gắn, "Gọi ai?": phím là số thứ tự, hoặc vài chữ có trong tên nút
+                var opts = ((List<Dictionary<string, object?>>)b.Pause["options"]!).Select(o => (string)o["text"]!).ToList();
+                pick = int.TryParse(key, out var num) ? Math.Clamp(num, 0, opts.Count - 1)
+                    : Math.Max(0, opts.FindIndex(o => key.Length > 0 && o.Contains(key, StringComparison.OrdinalIgnoreCase)));
+                sb.AppendLine($"\n>>> {type.ToUpperInvariant()}: " + string.Join(" | ", opts.Select(Shorten)) + $"  → chọn [{opts[pick]}]");
             }
             b = engine.Choose(st, pick);
         }
@@ -316,6 +341,13 @@ public sealed class CheckController : Controller
     {
         if (strategy == "random" || count <= 1) return rnd.Next(count);
         var ins = lib.Chapters[st.Chapter].Code[st.Pc];
+        // trận cuối: "c" luôn gọi đúng, "mix" gọi đúng khoảng hai phần ba số lần
+        if (ins is AskCallI call) return strategy == "c" || (strategy == "mix" && rnd.Next(100) < 66) ? call.Names.IndexOf(call.Correct) : rnd.Next(count);
+        if (strategy == "mix")
+        {
+            if (ins is not AskBattleI) return rnd.Next(count);
+            strategy = rnd.Next(100) < 70 ? "c" : "a";      // "mix": lựa chọn ngẫu nhiên, đối chất phần nhiều đánh mạnh
+        }
         if (ins is AskChoiceI ac)
         {
             var vis = ac.Options.Where(o => o.Cond == null || o.Cond.Eval(st)).ToList();

@@ -1,3 +1,4 @@
+
 # Chương 1: Lời bà Helena
 
 Bản 2, viết lại theo các quy tắc đã chốt ở Mở đầu.
@@ -15,6 +16,8 @@ A.L.I.C.E (loa): "Chào buổi sáng, Aethelgard. Hôm nay là ngày ổn địn
 [SPRITE: Kael_Surprised]
 
 Kael (nghĩ): Thế là có người thấy. Tất nhiên là có người thấy. Ở cái thành phố này có gì mà không ai thấy.
+
+[SPRITE: Kael_Neutral]
 
 [GHI CHÚ MỚI: Giấy gọi 18 giờ]
 
@@ -42,6 +45,8 @@ Nếu đã chọn 0-A hoặc 0-C (lần đầu Veritas lên tiếng)
 
 ???: "Giấy gọi hả? Tại tôi đấy. Xin lỗi nhé."
 
+[SPRITE: Kael_Surprised]
+
 (Kael đứng sững giữa đường. Anh nhìn quanh. Không ai nhìn lại.)
 
 Kael: "...Ai vừa nói?"
@@ -51,8 +56,6 @@ Kael: "...Ai vừa nói?"
 Kael: "Cổ tay... Cái thiết bị này á?"
 
 ???: "Thì hôm qua nó còn chưa có tôi. Cái tệp cậu xóa mãi không được ấy, nhớ không? Lúc nó biến khỏi màn hình là lúc tôi nhảy sang đây. Cổng đăng nhập cậu cắm sẵn thế kia cơ mà."
-
-[SPRITE: Kael_Surprised]
 
 Kael: "Không. Không không không. Cô, à không, cái thứ này, ra khỏi thiết bị của tôi ngay."
 
@@ -77,6 +80,8 @@ Veritas: "À, mà hôm qua cậu xóa tôi ba lần liền đấy. Tôi không t
 (Kael không nói được gì.)
 
 Veritas: "Thế này nhé: trước mặt người khác tôi im, cậu cứ coi như không có tôi. Đổi lại, lúc nào đi ngang cái ống số 7 thì cậu liếc nó giùm tôi một cái."
+
+[SPRITE: Kael_Neutral]
 
 Kael: "Tôi chưa đồng ý gì hết."
 
@@ -126,7 +131,7 @@ Helena: "Anh hỏi phải lắm. Vậy hôm nay tôi không về Tầng Đỉnh 
 
 (Im lặng một lúc. Người thợ van nhìn mấy người lính, rồi gật đầu, quay đi trước. Đám đông tan dần theo anh ta.)
 
-[SPRITE: Kael_Neutral]
+[SPRITE: Helena tắt] [SPRITE: Kael_Neutral]
 
 Kael (nghĩ): Nghe cũng xuôi tai. Mà Trưởng ban đã xuống tận đây thì chắc chẳng có gì đâu.
 
@@ -173,6 +178,8 @@ Kael: "Chú có nghe gì về cái tháp không? Sáng nay hơi trắng rò ra c
 Doran: "Chuyện của tháp, mình biết sao được. Trên đó có người lo."
 
 Kael: "Vâng. Cháu cũng nghĩ thế."
+
+[SPRITE: Doran tắt]
 
 [SE: SE04_Tieng_No_Thap_Nang_Luong]
 
@@ -523,7 +530,11 @@ Helena: "Tôi ký cho cậu giấy xuống, và cả giấy lên. Xuống đó x
 
 [VẬT PHẨM MỚI: Giấy thông hành hai chiều]
 
+[SPRITE: Helena tắt]
+
 (Kael cầm tờ giấy ra tới hành lang mới dám thở mạnh.)
+
+[SPRITE: Veritas_Hologram]
 
 Veritas: "Tôi im có giỏi không?"
 
@@ -551,11 +562,17 @@ Helena: "Tới khi tôi biết nên tin cậu tới đâu."
 
 [VẬT PHẨM MỚI: Lệnh điều chuyển một chiều]
 
+[SPRITE: Helena tắt]
+
 (Kael cầm tờ lệnh ra tới hành lang. Hai chữ "một chiều" in đậm ở góc trên.)
+
+[SPRITE: Veritas_Hologram]
 
 Veritas: "Tôi im có giỏi không?"
 
 Kael: "Giỏi. Mà cũng chẳng giúp được gì."
+
+[SPRITE: Veritas_Serious]
 
 Veritas: "...Xin lỗi. Cái giấy gọi là tại tôi."
 
@@ -577,7 +594,11 @@ Kael: "...Vâng, thưa bà."
 
 [VẬT PHẨM MỚI: Thẻ đặc phái của Ban Cố vấn]
 
+[SPRITE: Helena tắt]
+
 (Ra tới hành lang, Kael lật chiếc thẻ đặc phái trong tay. Nó nặng hơn thẻ kỹ sư, viền vàng như áo của bà Helena.)
+
+[SPRITE: Veritas_Hologram]
 
 Veritas: "Cậu gật đầu nhanh thật đấy."
 

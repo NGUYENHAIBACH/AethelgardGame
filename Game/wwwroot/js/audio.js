@@ -3,6 +3,7 @@ const Sound = (() => {
   let manifest = { bgm: [], se: [] };
   let settings = { bgm: 0.6, se: 0.8 };
   let cur = null, curName = null, wanted = null, unlocked = false;
+  let amb = null, ambName = null, ambWanted = null;
   let ctx = null;
 
   const find = (list, name) => list.find(f => f.replace(/\.[^.]+$/, '') === name);
@@ -26,7 +27,8 @@ const Sound = (() => {
     const f = find(manifest.bgm, name);
     if (!f) return;
     const el = new Audio('/assets/bgm/' + f);
-    el.loop = true; el.volume = 0;
+    el.loop = !name.startsWith('BGM11');   // bản thu bài hát cuối game: phát một lần, hết bài thì im
+    el.volume = 0;
     const p = el.play();
     const old = cur;
     cur = el; curName = name;
@@ -95,11 +97,26 @@ const Sound = (() => {
 
   return {
     init(m, s) { manifest = m; settings = Object.assign(settings, s); },
-    setSettings(s) { settings = Object.assign(settings, s); if (cur) cur.volume = settings.bgm; },
+    setSettings(s) { settings = Object.assign(settings, s); if (cur) cur.volume = settings.bgm; if (amb) amb.volume = settings.se; },
     /** gọi trong lần bấm đầu tiên của người chơi (trình duyệt chặn tự phát nhạc trước đó) */
     unlock() {
       unlocked = true; ac();
       if (wanted && (!cur || curName !== wanted)) startBgm(wanted);
+      if (ambWanted && ambName !== ambWanted) this.amb(ambWanted);
+    },
+    /** hiệu ứng chạy lặp (tiếng mưa): một kênh riêng bên cạnh nhạc nền; null = tắt */
+    amb(name) {
+      ambWanted = name;
+      if (name === ambName) return;
+      if (amb) { const o = amb; fade(o, 0, 900, () => o.pause()); amb = null; }
+      ambName = null;
+      const f = name && find(manifest.se, name);
+      if (!f || !unlocked) return;
+      const el = new Audio('/assets/se/' + f);
+      el.loop = true; el.volume = 0;
+      amb = el; ambName = name;
+      const p = el.play();
+      if (p && p.then) p.then(() => fade(el, settings.se, 1200)).catch(() => { amb = null; ambName = null; });
     },
     bgm(name) {
       wanted = name;

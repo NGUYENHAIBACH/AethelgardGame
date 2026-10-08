@@ -109,21 +109,22 @@ body.play { overflow: hidden; }
 
 .vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .55)); }
 
+/* sân khấu: tối đa ba người (trái sang phải), hình chiếu Veritas nhỏ cạnh Kael, bóng người phụ sát mép phải */
+.cast { position: absolute; inset: 0; pointer-events: none; }
 .sprite {
   position: absolute; bottom: 0; left: 50%; height: 94vh; max-width: 90vw; object-fit: contain;
-  transform: translateX(-50%); opacity: 0; transition: opacity .25s; pointer-events: none;
+  transform: translateX(-50%); opacity: 0; pointer-events: none;
+  transition: opacity .3s, left .3s ease, filter .3s;
   filter: drop-shadow(0 6px 24px rgba(0, 0, 0, .7));
 }
-.sprite { transition: opacity .25s, left .4s ease, filter .3s; }
-.sprite.pos-l { left: 29%; }
-.sprite.pos-r { left: 71%; }
-.sprite.show.dim { opacity: .9; filter: brightness(.42) saturate(.6) drop-shadow(0 6px 24px rgba(0, 0, 0, .7)); }
-.sprite.holo.show.dim { animation: none; filter: brightness(.45) saturate(.7) drop-shadow(0 0 14px rgba(61, 230, 200, .4)); }
 .sprite.show { opacity: 1; }
-.sprite.show.voice { opacity: 0; }
-.sprite.holo.show { opacity: .86; filter: drop-shadow(0 0 22px rgba(61, 230, 200, .75)) saturate(1.2); animation: holo 3.2s infinite; }
-.sprite.holo.show.voice { opacity: 0; }
-.sprite.glitch.show { animation: glitch 2.1s infinite; }
+.sprite.show.dim { filter: brightness(.5) saturate(.65) drop-shadow(0 6px 24px rgba(0, 0, 0, .7)); }
+.sprite.shade { left: 88%; height: 88vh; }
+.sprite.shade.show { opacity: .95; }
+.sprite.mini { height: 34vh; bottom: 33vh; }
+.sprite.holo.show { opacity: .88; filter: drop-shadow(0 0 16px rgba(61, 230, 200, .8)) saturate(1.2); animation: holo 3.2s infinite; }
+.sprite.holo.show.dim { animation: none; opacity: .8; filter: brightness(.55) saturate(.7) drop-shadow(0 0 10px rgba(61, 230, 200, .4)); }
+.sprite.holo.glitch.show { animation: glitch 2.1s infinite; }
 @keyframes holo { 0%, 100% { filter: drop-shadow(0 0 22px rgba(61, 230, 200, .75)) } 50% { filter: drop-shadow(0 0 30px rgba(61, 230, 200, .95)) brightness(1.12) } }
 @keyframes glitch { 0%, 88%, 100% { transform: translateX(-50%) } 90% { transform: translateX(calc(-50% - 9px)); filter: hue-rotate(80deg) } 94% { transform: translateX(calc(-50% + 8px)); filter: hue-rotate(-60deg) } 97% { transform: translateX(-50%) skewX(4deg) } }
 
@@ -200,6 +201,25 @@ body.play { overflow: hidden; }
 .choice:hover { border-color: var(--teal); background: rgba(61, 230, 200, .13); transform: translateX(4px); }
 
 /* thẻ chương */
+/* màn chọn ghi chú và màn gắn lời kể (Chương 3): danh sách dài, cuộn được */
+.choices.pick { justify-content: flex-start; gap: 8px; bottom: 27vh; padding: 58px 5vw 14px; background: rgba(0, 0, 0, .55); }  /* chừa ô thoại bên dưới: câu Veritas đang hỏi vẫn đọc được */
+.choices.pick .choice { padding: .6rem 1rem; font-size: .93rem; }
+.choices.pick .choice.dim { opacity: .5; font-style: italic; }
+.choices.pick .choice.last { margin-top: .6rem; border-style: dashed; }
+
+/* hình cuối của Kết cục 7/7: các lớp người quay lưng, xếp trên nền bình minh */
+.finale { position: absolute; inset: 0; z-index: 44; pointer-events: none; opacity: 0; transition: opacity 2.4s; }
+.finale.on { opacity: 1; }
+.finale-row { position: absolute; left: 0; right: 0; bottom: 9vh; display: flex; align-items: flex-end; justify-content: center; }
+.finale-row img { height: var(--kt-h, 50vh); margin: 0 -0.6vw; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .55)); }
+.ending.clear { background: rgba(2, 3, 7, .82); }
+.trend { max-width: 760px; text-align: left; margin-top: 1.2rem; border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 10px; padding: 1.1rem 1.6rem; display: grid; gap: .7rem; line-height: 1.7; background: rgba(12, 18, 30, .9); }
+.trend p { margin: 0; }
+.trend .trend-h { font-weight: 700; color: var(--gold); letter-spacing: .04em; }
+.credits { max-width: 640px; display: grid; gap: .8rem; line-height: 1.8; color: var(--ink); }
+.credits .big { font-size: clamp(1.5rem, 4vw, 2.4rem); letter-spacing: .1em; color: var(--gold); }
+.credits .dim { color: var(--dim); font-size: .9rem; }
+
 .card { position: absolute; inset: 0; z-index: 40; background: #000; display: grid; place-items: center; text-align: center; opacity: 0; transition: opacity .5s; }
 .card.on { opacity: 1; }
 .card h2 { font-size: clamp(1.8rem, 5vw, 3.2rem); letter-spacing: .1em; margin: .2rem 0 1.4rem; font-weight: 600; }

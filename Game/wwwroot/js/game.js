@@ -4,11 +4,12 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const E = {
-    stage: $('stage'), bgA: $('bgA'), bgB: $('bgB'), elev: $('elev'), sprite: $('sprite'), spriteL: $('spriteL'),
+    stage: $('stage'), bgA: $('bgA'), bgB: $('bgB'), elev: $('elev'), cast: $('cast'), holo: $('holo'), shade: $('shade'),
     bars: $('bars'), fillL: $('fillL'), fillD: $('fillD'), lblL: $('lblL'),
     toasts: $('toasts'), wrist: $('wrist'), dot: $('wristDot'),
     dialog: $('dialog'), name: $('name'), text: $('text'), more: $('more'),
     choices: $('choices'), card: $('card'), cardK: $('cardK'), cardT: $('cardT'), ending: $('ending'),
+    finale: $('finale'), finaleRow: $('finaleRow'),
     notebook: $('notebook'), nbBody: $('nbBody'), shardCount: $('shardCount'),
     shardView: $('shardView'), shardTitle: $('shardTitle'), shardBody: $('shardBody'),
     logPanel: $('logPanel'), logBody: $('logBody'),
@@ -16,7 +17,7 @@
     setPanel: $('setPanel'), busy: $('busy'),
   };
 
-  let manifest = { bg: [], sprites: [], bgm: [], se: [] };
+  let manifest = { bg: [], sprites: [], bgm: [], se: [], ending: [] };
   const cfg = Saves.settings();
   const dev = new URLSearchParams(location.search).has('dev');
 
@@ -25,7 +26,7 @@
     nb: { items: [], notes: [], shards: [] },
     log: [], typing: null, waiting: false, auto: false, skip: false, autoTimer: 0,
     cardOpen: false, locked: false, lastSay: null, chapter: '',
-    scene: { bg: null, sprite: null, elev: false, bars: false, lmax: 0, dmax: 0, l: 0, d: 0, who: 'Helena' },
+    scene: { bg: null, elev: false, bars: false, lmax: 0, dmax: 0, l: 0, d: 0, who: 'Helena' },
     nbTab: 'items', bgFront: 'A', curBg: null,
   };
 
@@ -49,7 +50,8 @@
   function setBg(name, instant) {
     if (name === S.curBg) return;
     S.curBg = name;
-    castStale = true;
+    // nền chưa có file và cũng chưa có nền tạm (các nền Tầng Đỉnh, mặt đất đang chờ vẽ): giữ nền đang hiện (HUONG_DAN_DEV_CHUONG_5.md mục 13)
+    if (name && !fileFor(manifest.bg, name) && !/^BG(0[1-7]|10)/.test(name)) return;
     const next = S.bgFront === 'A' ? E.bgB : E.bgA, prev = S.bgFront === 'A' ? E.bgA : E.bgB;
     S.bgFront = S.bgFront === 'A' ? 'B' : 'A';
     next.className = 'bg';
@@ -65,47 +67,52 @@
     setTimeout(() => { next.classList.add('on'); prev.classList.remove('on'); }, 20);
   }
 
-  // Hai nhân vật cùng hiện: Kael bên trái, người đối thoại bên phải; ai đang nói thì sáng, người kia tối đi.
-  const cast = { L: null, R: null };
-  let castStale = false;
-  const charOf = n => (n || '').split('_')[0];
+  // Sân khấu (HUONG_DAN_DEV_SAN_KHAU.md). Máy chủ gửi cả danh sách người đang có mặt, theo thứ tự trái sang phải;
+  // ở đây chỉ vẽ: mỗi người một <img> gắn theo tên (đổi biểu cảm không tạo lại phần tử), hình chiếu và bóng là hai phần tử riêng.
+  const castEls = new Map();
+  const POS = { 1: [50], 2: [29, 71], 3: [19, 50, 81] };
+  let lit = null;   // ai đang nói: tiền tố sprite, 'holo', 'shadow', hoặc null (không ai bị làm tối)
 
-  function paintSlot(k, name) {
-    const el = k === 'L' ? E.spriteL : E.sprite;
+  function paint(el, name) {
     const f = name && fileFor(manifest.sprites, name);
-    if (!f) { el.dataset.base = ''; return; }
+    if (!f) { el.dataset.want = ''; el.classList.remove('show'); return; }
+    if (el.dataset.want === name) return;
+    el.dataset.want = name;
     const img = new Image();
-    img.onload = () => {
-      if (cast[k] !== name) return;
-      el.src = img.src;
-      el.dataset.base = 'sprite ' + (name.startsWith('Veritas') ? 'holo ' : '') + (name === 'Veritas_Glitch' ? 'glitch ' : '');
-      updateFocus();
-    };
+    img.onload = () => { if (el.dataset.want !== name) return; el.src = img.src; el.classList.add('show'); };
     img.src = '/assets/sprites/' + f;
   }
 
-  function setSprite(name) {
-    S.scene.sprite = name;
-    if (castStale) { cast.L = cast.R = null; castStale = false; }   // đổi nền = đổi cảnh: bỏ người cũ
-    if (!name) cast.L = cast.R = null;
-    else cast[charOf(name) === 'Kael' ? 'L' : 'R'] = name;
-    paintSlot('L', cast.L); paintSlot('R', cast.R);
+  function setStage(st) {
+    const v = (st && st.v) || [], holo = (st && st.holo) || null, shadow = (st && st.shadow) || null;
+    const names = new Set(v.map(a => a.n));
+    castEls.forEach((el, n) => {
+      if (names.has(n)) return;
+      castEls.delete(n); el.classList.remove('show'); setTimeout(() => el.remove(), 320);
+    });
+    const pos = POS[v.length] || [];
+    let kaelX = null, kaelLast = false;
+    v.forEach((a, k) => {
+      let el = castEls.get(a.n);
+      if (!el) { el = document.createElement('img'); el.className = 'sprite'; el.alt = ''; E.cast.appendChild(el); castEls.set(a.n, el); }
+      el.style.left = pos[k] + '%';
+      paint(el, a.n + '_' + a.e);
+      if (a.n === 'Kael') { kaelX = pos[k]; kaelLast = v.length > 1 && k === v.length - 1; }
+    });
+    // hình chiếu: nhỏ, ngang tầm tay Kael, nằm về phía trong màn hình
+    if (holo && kaelX != null) {
+      E.holo.style.left = (kaelX + (kaelLast ? -12 : 12)) + '%';
+      E.holo.classList.toggle('glitch', holo === 'Glitch');
+      paint(E.holo, 'Veritas_' + holo);
+    } else paint(E.holo, null);
+    paint(E.shade, shadow);
     updateFocus();
   }
 
   function updateFocus() {
-    const nm = S.speaker || '';
-    const both = !!(cast.L && cast.R);
-    const match = k => { const c = charOf(cast[k]); return !!c && (nm === c || (nm === 'A.L.I.C.E' && c === 'ALICE')); };
-    const voice = !!S.hideVoice && !!cast.R;   // chỉ có tiếng, không hiện người
-    const anyMatch = !voice && (match('L') || match('R'));
-    [['L', E.spriteL], ['R', E.sprite]].forEach(([k, el]) => {
-      const on = !!cast[k] && !!el.dataset.base;
-      el.className = (el.dataset.base || 'sprite ') + (on ? 'show ' : '')
-        + (both ? (k === 'L' ? 'pos-l ' : 'pos-r ') : '')
-        + (both && anyMatch && !match(k) ? 'dim ' : '')
-        + (voice && k === 'R' ? 'voice ' : '');
-    });
+    castEls.forEach((el, n) => { el.classList.toggle('dim', !!lit && lit !== n); el.style.zIndex = lit === n ? 2 : 1; });
+    E.holo.classList.toggle('dim', !!lit && lit !== 'holo');
+    E.shade.classList.toggle('dim', !!lit && lit !== 'shadow');
   }
 
   function setBars(on, lmax, dmax, who) {
@@ -123,11 +130,13 @@
 
   function applyScene(sc) {
     setBg(sc.bg, true);
-    setSprite(sc.sprite);
+    lit = null;
+    setStage(sc.stage);
     E.elev.classList.toggle('on', !!sc.elev);
     setBars(!!sc.bars, sc.lmax, sc.dmax, sc.who);
     setBarValues(sc.l, sc.d);
     Sound.bgm(sc.bgm || null);
+    Sound.amb(sc.amb || null);
     S.chapter = sc.chapter || S.chapter;
   }
 
@@ -234,8 +243,7 @@
     E.name.textContent = nm;
     E.name.className = 'name ' + nameClass(nm);
     E.name.style.visibility = nm ? 'visible' : 'hidden';
-    S.hideVoice = !!st.hs;
-    S.speaker = nm;
+    lit = st.sp || null;
     updateFocus();
     if (st.teal) blinkWrist(true);
     if (st.loud) { E.stage.classList.remove('shake'); void E.stage.offsetWidth; E.stage.classList.add('shake'); }
@@ -281,7 +289,9 @@
       case 'bg': setBg(st.v, silent); break;
       case 'bgm': Sound.bgm(st.v || null); break;
       case 'se': if (!silent) Sound.se(st.v); break;
-      case 'spr': setSprite(st.v); break;
+      case 'amb': Sound.amb(st.v || null); break;
+      case 'unitem': S.nb.items = S.nb.items.filter(i => !i.name.startsWith(st.name)); break;
+      case 'stage': setStage(st); break;
       case 'elev': E.elev.classList.toggle('on', !!st.on); break;
       case 'bars': setBars(!!st.on, st.lmax, st.dmax, st.who); break;
       case 'bar': setBarValues(st.l, st.d); break;
@@ -342,7 +352,7 @@
   function handlePause() {
     const p = S.pause;
     autosave(true);
-    if (p.type === 'choice' || p.type === 'battle') return showChoices(p);
+    if (['choice', 'battle', 'pick', 'call'].includes(p.type)) return showChoices(p);
     if (p.type === 'end') return showEnding(p);
     if (p.type === 'chapterEnd') return showChapterEnd(p);
     showChapterEnd({ title: S.chapter, hasNext: false });
@@ -352,15 +362,21 @@
     S.skip = false; $('btnSkip').classList.remove('on');
     clearTimeout(S.autoTimer);
     let opts = p.options.slice();
-    if (p.type === 'battle') for (let i = opts.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[opts[i], opts[j]] = [opts[j], opts[i]]; }
+    // nút lựa chọn, đáp án đối chất và năm nút "Gọi ai?" đều xáo thứ tự; danh sách ghi chú và mắt xích thì giữ nguyên
+    if (p.type !== 'pick') for (let i = opts.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[opts[i], opts[j]] = [opts[j], opts[i]]; }
     E.choices.innerHTML = '';
-    opts.forEach(o => {
+    E.choices.classList.toggle('pick', p.type === 'pick');
+    E.choices.scrollTop = 0;
+    const lastFew = p.type === 'pick' ? opts.findIndex(o => ['Không có gì', 'Chưa gắn được vào đâu'].includes(o.text)) : -1;
+    opts.forEach((o, k) => {
       const b = document.createElement('button');
-      b.className = 'choice'; b.textContent = o.text;
+      b.className = 'choice' + (o.dim ? ' dim' : '') + (k === lastFew ? ' last' : ''); b.textContent = o.text;
       b.onclick = async () => {
         if (S.locked) return; S.locked = true;
         E.choices.hidden = true;
         if (p.type === 'choice') logAdd('Lựa chọn', o.text);
+        else if (p.type === 'pick') logAdd('Chọn', o.text);
+        else if (p.type === 'call') logAdd('Gọi', o.text);
         try { const batch = await api('Choose', { state: S.state, index: o.i }); loadBatch(batch, 0); }
         catch (e) { alert('Lỗi: ' + e.message); E.choices.hidden = false; }
         finally { S.locked = false; }
@@ -374,14 +390,23 @@
   function showEnding(p) {
     S.auto = false; S.skip = false; $('btnAuto').classList.remove('on'); $('btnSkip').classList.remove('on');
     E.dialog.hidden = true; E.choices.hidden = true;
+    // Kết cục 7/7: ghép hình cuối, giữ vài giây, rồi mới hiện dòng kết cục
+    if (p.final && p.final.length && !S.finaleShown) { S.finaleShown = true; showFinale(p.final, () => showEnding(p)); return; }
     const el = E.ending; el.innerHTML = '';
+    el.classList.toggle('clear', !!p.final);
     const h = document.createElement('h2'); h.textContent = '━━ ' + p.title + ' ━━'; el.appendChild(h);
     const box = document.createElement('div'); box.className = 'lesson';
     p.lesson.forEach((t, i) => { const e = document.createElement('p'); e.textContent = t; if (i === 0) e.className = 'lesson-h'; box.appendChild(e); });
     el.appendChild(box);
+    if (p.trend && p.trend.length) {
+      const tb = document.createElement('div'); tb.className = 'trend';
+      const th = document.createElement('p'); th.className = 'trend-h'; th.textContent = 'Lối bạn hay chọn'; tb.appendChild(th);
+      p.trend.forEach(t => { const e = document.createElement('p'); e.textContent = t; tb.appendChild(e); });
+      el.appendChild(tb);
+    }
     const row = document.createElement('div'); row.className = 'end-btns';
-    const cap = document.createElement('span'); cap.textContent = 'Quay lại điểm chọn:'; row.appendChild(cap);
-    p.retry.forEach(r => {
+    if (p.retry && p.retry.length) { const cap = document.createElement('span'); cap.textContent = 'Quay lại điểm chọn:'; row.appendChild(cap); }
+    (p.retry || []).forEach(r => {
       const b = document.createElement('button'); b.className = 'btn'; b.textContent = r.label;
       b.onclick = async () => {
         try { const batch = await api('Retry', { state: S.state, id: r.id }); el.hidden = true; S.nbOpen = false; loadBatch(batch, 0); }
@@ -389,9 +414,65 @@
       };
       row.appendChild(b);
     });
-    const m = document.createElement('a'); m.className = 'btn ghost'; m.href = '/'; m.textContent = 'Về menu'; row.appendChild(m);
+    if (p.final) {
+      const b = document.createElement('button'); b.className = 'btn primary'; b.textContent = 'Tiếp';
+      b.onclick = () => showCredits(p);
+      row.appendChild(b);
+    } else {
+      const m = document.createElement('a'); m.className = 'btn ghost'; m.href = '/'; m.textContent = 'Về menu'; row.appendChild(m);
+    }
     el.appendChild(row);
+    el.scrollTop = 0;
     el.hidden = false; setTimeout(() => el.classList.add('on'), 20);
+  }
+
+  // Hình cuối: Kael và mẹ ở giữa, các lớp khác xen đều hai bên theo thứ tự máy chủ gửi (người thân đứng gần), bà Helena ngoài cùng.
+  function showFinale(layers, done) {
+    const center = layers[0], rest = layers.slice(1).filter(n => n !== 'KT_Helena');
+    const left = [], right = [];
+    rest.forEach((n, k) => (k % 2 ? left : right).push(n));
+    if (layers.includes('KT_Helena')) (left.length <= right.length ? left : right).push('KT_Helena');
+    const order = left.reverse().concat([center], right);
+    E.finaleRow.innerHTML = '';
+    let pending = 0, ratio = 0;
+    const fit = () => {
+      // mọi lớp cùng chiều cao; thu nhỏ nếu cả hàng rộng hơn màn hình
+      E.finaleRow.style.setProperty('--kt-h', 'min(52vh, ' + (ratio ? 90 / ratio : 52).toFixed(2) + 'vw)');
+    };
+    order.forEach(n => {
+      const f = fileFor(manifest.ending || [], n);
+      if (!f) return;
+      const img = new Image(); img.alt = ''; pending++;
+      img.onload = () => { ratio += img.naturalWidth / img.naturalHeight; fit(); };
+      img.src = '/assets/ending/' + f;
+      E.finaleRow.appendChild(img);
+    });
+    fit();
+    castEls.forEach(el => el.classList.remove('show'));
+    E.holo.classList.remove('show'); E.shade.classList.remove('show');
+    E.finale.hidden = false;
+    setTimeout(() => E.finale.classList.add('on'), 30);
+    let fired = false;
+    const go = () => { if (fired) return; fired = true; S.finaleDone = null; done(); };
+    S.finaleDone = go;
+    setTimeout(go, 9000);   // giữ hình vài giây; bấm thì sang ngay
+  }
+
+  // Màn kết game: sau Kết cục 7/7, không có đoạn kể nào thêm (HUONG_DAN_DEV_CHUONG_5.md mục 14, điểm 9)
+  function showCredits(p) {
+    const el = E.ending; el.innerHTML = '';
+    const box = document.createElement('div'); box.className = 'credits';
+    const add = (cls, text) => { const e = document.createElement('p'); e.className = cls; e.textContent = text; box.appendChild(e); };
+    add('big', 'BẢN TÌNH CA CỦA THỜI ĐẠI');
+    add('', 'Hết.');
+    add('dim', 'Mảnh lưu trữ đã mở: ' + p.shards + '/' + p.shardsTotal + '. Kết cục: 7/7 "Bình minh".');
+    add('dim', 'Còn sáu kết cục khác và những mảnh chỉ mở ở các nhánh khác. Chơi lại từ menu để tìm chúng.');
+    add('dim', 'Sản phẩm học tập môn Triết học Mác – Lênin (MLN111).');
+    el.appendChild(box);
+    const row = document.createElement('div'); row.className = 'end-btns';
+    const m = document.createElement('a'); m.className = 'btn primary'; m.href = '/'; m.textContent = 'Về menu'; row.appendChild(m);
+    el.appendChild(row);
+    el.scrollTop = 0;
   }
 
   function showChapterEnd(p) {
@@ -425,6 +506,7 @@
     S.nb = JSON.parse(JSON.stringify(b.notebook));
     S.idx = 0; S.waiting = false; S.typing = null; S.cardOpen = false;
     E.ending.hidden = true; E.ending.classList.remove('on'); E.choices.hidden = true;
+    E.finale.hidden = true; E.finale.classList.remove('on'); S.finaleShown = false; S.finaleDone = null;
     closeShard(true);
     applyScene(b.scene);
     renderNotebook();
@@ -534,6 +616,7 @@
     if (shardOpen()) { closeShard(); return; }
     if (anyPanel()) { closePanels(); return; }
     if (S.cardOpen) { S.cardDone && S.cardDone(); return; }
+    if (S.finaleDone) { S.finaleDone(); return; }
     advance();
   });
 

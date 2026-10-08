@@ -1,6 +1,6 @@
 # Aethelgard: game web ASP.NET Core MVC (C#, Visual Studio 2022)
 
-Game visual novel dựa trên Giáo trình Triết học Mác – Lênin (2021). Chạy được hết Mở đầu, Chương 1 và Chương 2 theo kịch bản trong `ban_giao_dev/`.
+Game visual novel dựa trên Giáo trình Triết học Mác – Lênin (2021). Chạy được trọn truyện: Mở đầu và Chương 1 đến 5, bảy kết cục, 32 mảnh, theo kịch bản và các file hướng dẫn trong `ban_giao_dev/`.
 
 ## Chạy game
 
@@ -55,3 +55,29 @@ Cách / Enter: đọc tiếp. Ctrl (giữ): bỏ qua. A: tự động. L: nhật
 ## Đưa lên máy chủ
 
 `dotnet publish -c Release -o publish`, chép thư mục `publish` lên máy chủ chạy .NET 8. Thư mục `Story` đi kèm. Trang `/Check` tự tắt ngoài chế độ Development.
+
+## Cập nhật 08/10/2026: sân khấu, Chương 3 đến 5, màn kết
+
+Sáu file `Story/00..05_*.md` là bản sao mới nhất của `ban_giao_dev/`. Khi người viết xuất lại kịch bản thì chép đè vào `Story/`, không sửa tay ở đây.
+
+**Sân khấu** (`HUONG_DAN_DEV_SAN_KHAU.md`). `GameState` giữ `Stage` (tối đa ba người, trái sang phải), `Holo` (hình chiếu Veritas), `Shadow` (bóng người phụ). Luật nằm ở `GameState.Enter / Spoke / Leave / HoloOn / ClearStage` và `GameEngine.Speak`. Máy chủ gửi cả sân khấu trong bước `stage`; `game.js` (`setStage`) chỉ vẽ. Thêm người có sprite hoặc có bóng: sửa hai bảng `Actors`, `Shadows` trong `GameEngine.cs`.
+
+**Điều kiện** (`Models/Story/Cond.cs`). Bảng `Phrases` đổi từng cụm chữ của kịch bản thành điều kiện. Biến viết thẳng tên đọc được luôn: `vane_len = co`, `so_thung từ 2 tới 4`, `vung dưới 6`. Một dãy gạch đầu dòng `Nếu …` liền nhau kết bằng `Nếu không` là chuỗi xét từ trên xuống, chạy khối đầu tiên khớp; dòng trống ngắt chuỗi.
+
+**Tiêu đề có điều kiện** (`Compiler.cs`, `HeadCond`, `BoldCond`). `### Nhánh 6-A`, `### Bản trên: …`, `#### Trước mặt Helena (T1, T2)`, `**Lối T2: …**`, `**Tấm nhãn (chỉ khi …)**` mở một phạm vi kéo dài tới tiêu đề cùng cấp kế tiếp. `**Chung**`, `**Nhập lại**` đóng các nhãn in đậm phía trên.
+
+**Màn chơi mới.**
+
+- Chương 3 Cảnh 2 (chọn ghi chú) và Cảnh 3 (gắn lời kể): lệnh `AskNoteI`, `AskLinkI`; luật ở `GameEngine.ChooseNote`, `ChooseLink`. Lời Veritas khi chọn sai lấy từ khối `**Luật chọn**`, `**Luật gắn**` của kịch bản.
+- Chương 5 Cảnh 3 ("Gọi ai?"): lệnh `AskCallI`; các khối `**Gọi "…" (đúng|sai)**` là phạm vi theo nút vừa bấm. `→ Chạy "Khi một chốt vỡ"` là lệnh gọi rồi quay về (`CallI`, `ReturnI`); `sang "Thắng"` là lệnh nhảy (`GotoI`).
+- Màn kết cục: khối "Lối bạn hay chọn" (`GameEngine.TrendBlock`, chữ chép từ `HUONG_DAN_DEV_CHUONG_5.md` mục 10), nút quay lại theo từng kết cục (`RetryIds`), hình cuối ghép lớp (`FinalLayers`, ảnh ở `wwwroot/assets/ending`), rồi màn kết game.
+
+**Biến suy ra, không có dòng nào trong kịch bản đặt:** `ban`, `loi_vao`, `thang_vane` (lệnh `init_c3`), `helena` (`init_c4`), `lo_truoc_c3` (`c4_scene3`), `veritas` (`resolve_veritas`); `so_thung`, `doi_len`, `doi_thiet_bi`, `bi_giu`, `hen_thao`, `co_nguoi_di_cung` tính ngay trong `Cond.cs` và `GameState.Num`.
+
+**Tài nguyên còn chờ** (thả đúng tên vào thư mục là game tự dùng): nền `BG11`, `BG14` đến `BG18` (chưa có thì game giữ nền đang hiện); nhạc `BGM09_Investigation`, `BGM10_ALICE`; hiệu ứng `SE01` đến `SE07` vào `wwwroot/assets/se` (`SE07_Mua` chạy lặp tới thẻ `[BG]` kế tiếp).
+
+**Kiểm tra sau mỗi lần đổi kịch bản** (chạy ở chế độ Development):
+
+- `/Check`: phải không còn cảnh báo nào.
+- `/Check/Simulate?runs=500&strategy=mix` (và `random`, `c`, `a`): không lỗi, tới đủ bảy kết cục. Hai dòng ở `05_chuong_5.md:553-554` không ván nào tới được: điều kiện của chúng không thể xảy ra với các biến hiện có (đã báo người viết).
+- `/Check/Transcript?keys=…`: in cả sân khấu sau mỗi lần đổi. Ở màn chọn ghi chú, màn gắn và "Gọi ai?", phím là vài chữ có trong tên nút. Thêm `&state=1` để lấy trạng thái ván tại điểm dừng.
