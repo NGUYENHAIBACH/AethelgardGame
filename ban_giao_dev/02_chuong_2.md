@@ -1,4 +1,3 @@
-
 # Chương 2: Tầng Đáy
 
 ## Cảnh 1: Thang hàng
@@ -303,7 +302,6 @@ Người bốc hàng: "Thùng nào tôi chất lên cũng đầy. Cậu có họ
 
 ## Cảnh 2: Xưởng đúc số 4
 
-
 [BG: BG07_Dai_Ban_Doanh_Khang_Chien]
 
 **Nếu 3-A (tới trước khi tin lan)**
@@ -557,7 +555,7 @@ Thợ trẻ: "Bốn tháng trước còn chín phần. Giờ thì cậu thấy r
 
 (Một chị thợ ngồi cạnh cái nồi, hát khe khẽ.)
 
-Chị thợ: "...lò đỏ bên thềm... búa nghỉ tay rồi..." (lời hát tạm, sẽ thay khi có bài hát thật)
+Chị thợ: "...lò đỏ bên thềm... búa nghỉ tay rồi..."
 
 Chị thợ: "...mẻ về trên máng... con ngủ đi..."
 
@@ -607,7 +605,6 @@ Veritas (rất khẽ): "Họ hát khác tôi hai chữ."
 (Ghi chú cho người làm game: mẹ Kael có sprite (ô tên "Mẹ", thẻ dùng tiền tố `Me`) và tự lên sân khấu khi nói; "Thợ già", "Thợ trẻ", "Chị thợ" có bóng `Bong_…`, game tự hiện khi họ nói. BG07 dùng làm xưởng; nếu hình có ánh lửa thì chỉnh tối đi hoặc coi là bóng đèn, vì Cảnh 1 đã viết "bên trong không có ánh lửa". Biến mới: lua_chon_4 (A / B / C), rian_da_nghe (có / không). Lợi của 3-A: ghi chú "Lời nghe lỏm", dùng ở Chương 4. Giá của 3-B và 3-C: thợ im trước mặt Kael. 4-A không cho ghi chú hay mảnh, chỉ cộng khuynh hướng. Ghi chú "Rian đã nghe chuyện mười hai người" dùng ở Chương 4; "Bữa sáu phần" mở một câu đáp mạnh khi đối chất với Vane. Cảnh này gặt chiếc thẻ cũ của mẹ, hai suất mỗi tuần, và nửa đầu của bài hát về mưa. Veritas im suốt cảnh vì có người; thiết bị cổ tay ấm lên là dấu hiệu duy nhất.)
 
 ## Cảnh 3: Lò lớn
-
 
 [BG: BG06_Duong_Ong_Ngam_Tang_Day] [BGM: tắt]
 
@@ -763,7 +760,6 @@ Thợ học việc: "Anh Rian! Ông Vane vào xưởng rồi, khiêng theo một
 (Ghi chú cho người làm game: cảnh không có lựa chọn và không có biến mới. Câu mở của Rian rẽ theo lua_chon_4 và rian_da_nghe. Ghi chú "Số đo đai vá" chỉ có ở nhánh 1-C; ghi chú "Lò lớn" ai cũng nhận. Hai ghi chú này không mở đòn trong trận đối chất với Vane; "Số đo đai vá" để dành Chương 3. BG06 dùng cho cả lối đi lẫn khoảng lò lớn. Cả cảnh không có nhạc (BGM03 là bản của Vane, chỉ bật ở trận đối chất). Trong cảnh này Veritas chỉ có tiếng, không hiện hình chiếu, vì Rian ở gần; cô chỉ nói khi Rian quay lưng hoặc đứng xa. Nhánh Thẻ đặc phái sau 4-C: tấm thẻ đang nằm trong túi áo chứ không cài trên ngực. "Thợ học việc" chỉ có ô tên.)
 
 ## Cảnh 4: Vane và Soma-X
-
 
 [BG: BG07_Dai_Ban_Doanh_Khang_Chien]
 
@@ -954,7 +950,6 @@ Rian: "Hỏi với han. Anh câu giờ cho ai đấy?"
 (Ghi chú cho người làm game: biến mới: lua_chon_5 (A / B / C), han_vane (sang_mai / ngay_bay_gio; chỉ 5-B là ngay_bay_gio). Lời của ba lựa chọn hiện theo giay_to. Ghi chú "Người đã tiêm" chỉ có ở 5-C, mở một câu đáp mạnh khi đối chất. Cả cảnh không có nhạc. Veritas im suốt cảnh và không hiện hình chiếu; thiết bị cổ tay lạnh đi là dấu hiệu duy nhất. Vane chỉ to tiếng một lần, ở 5-B của nhánh Thẻ đặc phái. Mẹ ngồi trên ghế thấp ở cuối xưởng, chỉ đứng dậy một lần ở nhánh Lệnh điều chuyển 5-A; Vane đứng giữa xưởng; cái hòm nằm trên bệ búa máy, cao ngang thắt lưng. "Thợ bể tảo" có bóng `Bong_Tho_be_tao`, game tự hiện khi anh ta nói. Ở nhánh Lệnh điều chuyển 5-A, kim không chạm vào Kael. Trong lời thoại không ai gọi tên thuốc; tên "Soma-X" chỉ dùng ở tiêu đề cảnh. Câu "bốn suất, sáu người" dời sang trận đối chất.)
 
 ## Cảnh 5: Đối chất với Vane
-
 
 Năm câu hỏi, mỗi câu hai lượt. Lượt một: Vane đưa lý lẽ, Kael đáp. Nếu Kael lật lại được lý lẽ ấy ([C]) thì Vane vặn lại, và Kael phải đáp lần hai. Dòng "Lập trường" chỉ dành cho người làm game, người chơi không thấy.
 
@@ -1316,7 +1311,6 @@ Kael: "Ông ấy... nói có lý, mẹ ạ. Hết thấy đói thì đỡ khổ.
 (Ghi chú cho người làm game: thứ tự xét kết quả như trận Helena. Ngưỡng: Lung lay 6, Dao động 6. [Giữ lời] không cho bên nào điểm: Kael đúng ý nhưng không có gì trong tay, Vane không nhường. 5-A vào trận với Dao động +1, không có lời thoại báo. Luôn hỏi đủ năm câu. Mỗi câu: chọn [A] hoặc [B] thì câu hỏi kết thúc; chọn [C] thì chưa có điểm, Vane vặn lại, rồi hiện các đáp án lượt hai. [Đòn] chỉ hiện khi giữ ghi chú tương ứng; nếu giữ hai ghi chú cùng mở đòn của một câu thì hiện bản đứng trước trong kịch bản. Lời các đáp án không đổi theo Lựa chọn 5 hay giấy tờ. Ghi chú "Bảng suất Tầng Đáy" mở đòn ở cả câu 3 và câu 5; câu 5 chỉ có một đòn. Ở câu 3, chỉ đòn "Bảng suất" khiến Vane tự tính đủ ba vế. Ghi chú "Lò lớn", "Số đo đai vá" và "Rian đã nghe chuyện mười hai người" không mở đòn nào trong trận; "Số đo đai vá" để dành Chương 3, "Rian đã nghe" dùng ở Chương 4. Câu 1 chỉ có một đòn (cần 4-C). Tầng Đáy +1 mỗi lần một người trong xưởng đứng ra xác nhận lời Kael bằng điều chính họ biết. Đòn câu 4 không tự đổi biến rian_da_nghe; biến này có thể đổi ở Cảnh 6 ("Một câu của Rian"). Veritas im suốt trận và không hiện hình chiếu. Vane_Aggressive chỉ dùng ở câu 4 đáp án [B]; Vane_Silent dùng ở câu 3, cả hai đòn ("Bảng suất" và "Lời người bốc hàng"), lúc ông im rất lâu. BGM03 chạy từ câu 1 tới hết trận. Vị trí: mẹ ở cuối xưởng (đang đứng nếu 5-B hoặc Lệnh điều chuyển 5-A), Vane đứng cạnh bệ búa, cái hòm mở trên bệ búa, hai người đồ đen ở cửa xưởng hoặc đã vào trong nếu 5-B. Tấm bảng suất: bốn con số cách nhau chín tuần, năm tuần, ba tuần; số cuối ghi từ tám ngày trước.)
 
 ## Cảnh 6: Sau cái hòm (kết chương)
-
 
 Cảnh nối liền sau trận đối chất, không có lựa chọn mới. Đoạn 1 đi theo kết quả trận. Đoạn 2 đi theo giấy tờ. Đoạn 3 là Kael và Veritas.
 

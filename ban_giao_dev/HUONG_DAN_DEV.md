@@ -54,7 +54,7 @@ Chương 2 đã giao ngày 04/10/2026, hướng dẫn riêng ở `HUONG_DAN_DEV_
 - `01_chuong_1.md`: dòng "Bản 2, viết lại theo các quy tắc đã chốt ở Mở đầu." ngay dưới tiêu đề.
 - `01_chuong_1.md`, đầu Cảnh 3: dòng "Bản 3, viết lại toàn bộ. Mỗi câu hỏi là một vấn đề triết học…".
 
-Trong Mở đầu Cảnh 3 có một câu hát kèm chú thích `(lời hát tạm, sẽ thay khi có bài hát thật)`. Chú thích đó không hiện; lời hát để dạng dễ thay.
+**Sửa 08/10/2026:** lời bài hát đã chốt, nên chú thích `(lời hát tạm, sẽ thay khi có bài hát thật)` sau câu hát ở Mở đầu Cảnh 3 đã bỏ khỏi kịch bản. Câu hát không đổi chữ nào. `00_mo_dau.md` và `Kich_ban_Mo_dau_va_Chuong_1.docx` đã xuất lại; nếu code có chỗ lọc chú thích ấy thì gỡ đi.
 
 ## 3. Giao diện cần có
 

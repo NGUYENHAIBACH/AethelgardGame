@@ -49,7 +49,7 @@ Không có thay đổi nào khác ở Mở đầu và Chương 1.
 
 **Ô tên.** Rian hiện "???" cho tới dòng `(Từ đây ô tên hiện "Rian".)`. Các vai chỉ có ô tên, không có sprite: Mẹ, Thợ già, Thợ trẻ, Chị thợ, Thợ học việc, Thợ bể tảo, Người gác thang, Người bốc hàng, Người phát suất. **(Câu này hết hiệu lực từ 06/10/2026: mẹ Kael và Doran có sprite, sáu người phụ có bóng. Xem `HUONG_DAN_DEV_SAN_KHAU.md` mục 2.1 và 2.11.)**
 
-**Lời hát.** Hai câu hát trong Cảnh 2 và Cảnh 4 ("...lò đỏ bên thềm...", "...con ngủ đi...") là lời tạm, để dạng dễ thay.
+**Lời hát.** Hai câu hát trong Cảnh 2 và Cảnh 4 ("...lò đỏ bên thềm...", "...con ngủ đi...") là lời chính thức (lời bài hát đã chốt). **Sửa 08/10/2026:** chú thích `(lời hát tạm, sẽ thay khi có bài hát thật)` sau câu hát của chị thợ ở Cảnh 2 đã bỏ khỏi kịch bản; câu hát không đổi chữ nào. `02_chuong_2.md` và `Kich_ban_Chuong_2.docx` đã xuất lại.
 
 ## 4. Biến mới
 

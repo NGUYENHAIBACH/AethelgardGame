@@ -1412,7 +1412,7 @@ Mảnh 23: "Thêm một độ nữa" (ai cũng nhận, Cảnh 2, khi cái lồng
 >
 > Suất Tầng Đáy bớt từ chín phần xuống tám, rồi bảy: người ta vẫn đập búa. Bớt thêm đúng một phần nữa thì xưởng số 4 dừng tay. Một xưởng dừng chín ngày, cái lồng vẫn lên đủ sáu thùng. Tới lượt dãy bể tảo có chuyện, chỉ một buổi chiều, thì tối nay nó lên thiếu.
 >
-> Triết học gọi những thay đổi nhiều hay ít, nhanh hay chậm là thay đổi về lượng; sự chuyển sang một cái khác hẳn là thay đổi về chất. Lượng đổi dần trong một giới hạn thì sự vật vẫn là nó. Vượt qua giới hạn ấy thì chất đổi.
+> Triết học gọi những thay đổi nhiều hay ít, nhanh hay chậm là thay đổi về lượng; sự chuyển sang một cái khác hẳn là thay đổi về chất. Lượng đổi dần trong một giới hạn thì sự vật vẫn là nó. Vượt qua giới hạn ấy thì chất đổi. Chỗ giới hạn ấy gọi là điểm nút, và sự chuyển từ chất cũ sang chất mới gọi là bước nhảy.
 >
 > Muốn đọc thêm: Chương 2, phần II, mục 2: Nội dung của phép biện chứng duy vật (Quy luật chuyển hóa từ những thay đổi về lượng dẫn đến những thay đổi về chất và ngược lại).
 

@@ -1,6 +1,6 @@
 # Hướng dẫn cho dev: Chương 4
 
-**Bản thảo 07/10/2026, chờ người viết kịch bản duyệt.** Các điểm ở mục 13 là đề nghị, chưa chốt.
+**Người viết kịch bản duyệt 08/10/2026,** kèm 8 quyết định ở mục 13.
 
 Tài liệu này nối tiếp `HUONG_DAN_DEV.md` (Mở đầu, Chương 1), `HUONG_DAN_DEV_CHUONG_2.md`, `HUONG_DAN_DEV_CHUONG_3.md` và `HUONG_DAN_DEV_SAN_KHAU.md` (luật sprite và nhạc). Mọi quy ước ở các tài liệu đó vẫn giữ nguyên. Ở đây chỉ ghi cái mới và cái khác. Khi tài liệu này và kịch bản lệch nhau thì kịch bản đúng.
 
@@ -208,6 +208,8 @@ Bảng kiểm thử nhanh:
 | 24 | "Cần nhau mà giằng nhau" | Mọi người | Cảnh 3, sau câu hẹn chuyến trưa của thư ký |
 | 25 | "Giữ cái móng" | Ai đi nhánh 9-C | Cảnh 4, khi cái lồng đi lên |
 
+**Sửa 08/10/2026:** Mảnh 23 thêm một câu ở cuối đoạn thứ ba ("Chỗ giới hạn ấy gọi là điểm nút, và sự chuyển từ chất cũ sang chất mới gọi là bước nhảy."). Bản `04_chuong_4.md` và `Kich_ban_Chuong_4.docx` đã xuất lại; chép lại nội dung mảnh này nếu đã nhập.
+
 Người chơi dừng ở kết cục 9-A hoặc 9-B không có Mảnh 25 (quay lại chọn 9-C thì có). Không mảnh nào có số liệu động. Nội dung chép nguyên văn từ các khối `>` ở cuối file. Mảnh 25 nhắc tới "phủ định sạch trơn" nhưng **không** hiện bộ đếm lập trường của Chương 1 (mục 13, điểm 3).
 
 ## 12. Tài nguyên dùng trong Chương 4
@@ -226,7 +228,7 @@ Người chơi dừng ở kết cục 9-A hoặc 9-B không có Mảnh 25 (quay 
 
 ## 13. Các điểm kịch bản không nói rõ
 
-Dưới đây là **đề nghị**, chờ người viết chốt. Các mục phía trên viết theo đúng các đề nghị này.
+Các điểm dưới đây **người viết đã chốt 08/10/2026** (cột "Đề nghị" là điều đã chốt). Các mục phía trên viết theo đúng chúng.
 
 | # | Điểm | Đề nghị |
 |---|---|---|

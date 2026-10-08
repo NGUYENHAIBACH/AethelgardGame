@@ -1,4 +1,3 @@
-
 # Mở đầu: Tệp không chịu xóa
 
 Bản 3. Cảnh 1 giữ nguyên. Cảnh 2 và 3 viết lại: giải thích "suất", thêm túi đồ, tệp tự mở thay vì Kael mở, lý do xóa được ở nhánh A, giấu tên nhân vật cho tới khi được giới thiệu. Ký hiệu [VẬT PHẨM] và [GHI CHÚ] là thông báo người chơi nhìn thấy; [GIEO] chỉ dành cho người làm game.
@@ -127,7 +126,7 @@ Kael (nghĩ): Hạn thay năm 2310. Giờ là năm 2350. Trễ bốn mươi năm
 
 (Loa máy tự bật. Giọng phụ nữ, rè và đứt quãng, hát được nửa câu rồi tắt.)
 
-???: "...mưa về trên mái... con ngủ đi..." (lời hát tạm, sẽ thay khi có bài hát thật)
+???: "...mưa về trên mái... con ngủ đi..."
 
 (Kael vội vặn nhỏ loa.)
 
