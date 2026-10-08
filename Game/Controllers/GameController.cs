@@ -61,6 +61,9 @@ public sealed class GameController : Controller
             se = Scan("se", ".mp3", ".ogg", ".wav"),
             ending = Scan("ending", ".png", ".webp"),
             chapters = lib.Chapters.Select(c => c.Title).ToArray(),
+            shardsTotal = lib.Shards.Count,
+            // dấu phiên bản của thư mục sprite: gắn vào đường dẫn hình để bản đã lưu sẵn trong trình duyệt không che bản mới
+            v = Directory.GetFiles(Path.Combine(env.WebRootPath, "assets", "sprites")).Select(System.IO.File.GetLastWriteTimeUtc).DefaultIfEmpty().Max().Ticks.ToString("x"),
         });
     }
 }

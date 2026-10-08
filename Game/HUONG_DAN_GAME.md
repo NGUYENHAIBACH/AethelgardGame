@@ -74,10 +74,22 @@ Sáu file `Story/00..05_*.md` là bản sao mới nhất của `ban_giao_dev/`. 
 
 **Biến suy ra, không có dòng nào trong kịch bản đặt:** `ban`, `loi_vao`, `thang_vane` (lệnh `init_c3`), `helena` (`init_c4`), `lo_truoc_c3` (`c4_scene3`), `veritas` (`resolve_veritas`); `so_thung`, `doi_len`, `doi_thiet_bi`, `bi_giu`, `hen_thao`, `co_nguoi_di_cung` tính ngay trong `Cond.cs` và `GameState.Num`.
 
-**Tài nguyên còn chờ** (thả đúng tên vào thư mục là game tự dùng): nền `BG11`, `BG14` đến `BG18` (chưa có thì game giữ nền đang hiện); nhạc `BGM09_Investigation`, `BGM10_ALICE`; hiệu ứng `SE01` đến `SE07` vào `wwwroot/assets/se` (`SE07_Mua` chạy lặp tới thẻ `[BG]` kế tiếp).
+**Tài nguyên:** mọi nền, nhạc, hiệu ứng, sprite và bóng mà kịch bản gọi tới đều đã có file (soát 08/10/2026). Thêm hoặc thay file thì thả đúng tên vào thư mục, game tự dùng.
 
 **Kiểm tra sau mỗi lần đổi kịch bản** (chạy ở chế độ Development):
 
 - `/Check`: phải không còn cảnh báo nào.
-- `/Check/Simulate?runs=500&strategy=mix` (và `random`, `c`, `a`): không lỗi, tới đủ bảy kết cục. Hai dòng ở `05_chuong_5.md:553-554` không ván nào tới được: điều kiện của chúng không thể xảy ra với các biến hiện có (đã báo người viết).
+- `/Check/Simulate?runs=500&strategy=mix` (và `random`, `c`, `a`): không lỗi, tới đủ bảy kết cục.
 - `/Check/Transcript?keys=…`: in cả sân khấu sau mỗi lần đổi. Ở màn chọn ghi chú, màn gắn và "Gọi ai?", phím là vài chữ có trong tên nút. Thêm `&state=1` để lấy trạng thái ván tại điểm dừng.
+
+## Cập nhật 08/10/2026 (đợt hai): trận A.L.I.C.E, hướng dẫn, Back, màn kết
+
+- **Trận "Gọi ai?"** hiện thanh "Lung lay" và ba chốt (`#barC`), mỗi nút có gợi ý khi trỏ chuột (`GameEngine.CallHints`). Người viết yêu cầu, khác `HUONG_DAN_DEV_CHUONG_5.md` mục 15.
+- **Bảng hướng dẫn cách chơi** (`game.js`, khối `GUIDES`): đối chất, chọn ghi chú, gắn lời kể, "Gọi ai?". Mỗi bảng tự hiện một lần cho mỗi trình duyệt (`Saves.guideSeen`), mở lại bằng nút "? Cách chơi". Máy chủ gửi `how` = `note` / `link` ở điểm dừng `pick` để phân biệt hai màn của Chương 3.
+- **Nút Back** lùi về câu thoại trước trong cùng một đoạn, không lùi qua điểm chọn. Khi lùi hoặc tải bản lưu, `loadBatch` không diễn lại từng bước mà tính trạng thái sân khấu, nền, nhạc, thanh điểm tại câu ấy rồi dựng một lần.
+- **Skip** giữ nguyên qua điểm chọn; chỉ tắt ở màn kết cục và khi bấm Back.
+- **Màn kết game** (sau Kết cục 7/7) để sáng, chữ dồn lên phần trời (`.ending.sky`). Màn bài học trước đó vẫn nền tối.
+- **Menu:** chỉ hiện những nhân vật đã gặp (`Saves.met`); A.L.I.C.E đứng giữa, phía sau. Mục "Kết cục" gộp các kết cục đã xem qua mọi lượt chơi.
+- **Bóng người phụ:** bảng `GameEngine.Shadows` nối tên người nói với file `Bong_…`. Thêm người phụ mới thì thêm một dòng ở đó và thả file vào `wwwroot/assets/sprites/`.
+- **File tĩnh** trả `Cache-Control: no-cache` (`Program.cs`) và đường dẫn sprite có dấu phiên bản (`Manifest.v`), để file thay mới cùng tên hiện ra ngay.
+- **Trang `/Check`** chỉ mở ở chế độ Development; ở Production mọi địa chỉ `/Check/...` trả 404 và menu không in liên kết.

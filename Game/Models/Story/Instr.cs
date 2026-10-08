@@ -17,6 +17,7 @@ public sealed class SayI : Instr
     public string Text = "";
     public bool Loud;         // (to tiếng)
     public bool Whisper;      // (rất khẽ), (thì thầm)
+    public bool WhisperTren;  // Chương 3 Cảnh 2, 3: ở bản trên (giữa xưởng lưu trữ, có camera) Kael và Veritas chỉ thì thầm
     public bool WristTeal;    // dòng tả biểu tượng cổ tay nháy xanh ngọc
 }
 

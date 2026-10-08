@@ -26,6 +26,8 @@
     </a>
     <nav class="links" aria-label="Chính">
       <a href="#" data-click="btnChapters" hidden>Chọn chương</a>
+      <a href="#" data-click="btnEndings">Kết cục</a>
+      <a href="#" data-click="btnShards">Mảnh lưu trữ</a>
       @if (Env.IsDevelopment()) { <a href="/Check">Trang kiểm tra</a> }
     </nav>
     <div class="actions">
@@ -37,6 +39,8 @@
     </div>
     <nav class="sheet" id="menu-sheet" aria-label="Menu">
       <a href="#" data-click="btnChapters" hidden>Chọn chương</a>
+      <a href="#" data-click="btnEndings">Kết cục</a>
+      <a href="#" data-click="btnShards">Mảnh lưu trữ</a>
       @if (Env.IsDevelopment()) { <a href="/Check">Trang kiểm tra</a> }
       <a class="lb solid" href="/Game/Play?new=1" data-click="btnNew">Chơi mới</a>
     </nav>
@@ -56,6 +60,8 @@
         <a class="lb ghost" href="/Game/Play" id="btnContinue" hidden>Tiếp tục</a>
         <button class="lb ghost sr" id="btnLoad" type="button">Tải bản lưu</button>
         <button id="btnChapters" type="button" hidden class="sr">Chọn chương đã qua</button>
+        <button id="btnEndings" type="button" class="sr">Kết cục đã xem</button>
+        <button id="btnShards" type="button" class="sr">Mảnh lưu trữ đã mở</button>
       </div>
     </main>
   </div>

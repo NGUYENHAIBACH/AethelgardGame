@@ -33,6 +33,7 @@ public sealed class GameState
     public List<int> Ret { get; set; } = new();
     // Thứ tự cộng điểm năm khuynh hướng (cái cộng sau cùng đứng cuối), để phá hòa ở khối "Lối bạn hay chọn"
     public List<string> TrendOrder { get; set; } = new();
+    public bool Duel { get; set; }         // đang trong trận cuối: hiện thanh "Lung lay · A.L.I.C.E" và ba chốt
     public string? Amb { get; set; }       // hiệu ứng chạy lặp đang phát (SE07_Mua), tắt khi đổi nền
 
     // Cảnh đang hiển thị (để tải lại ván là dựng lại đúng màn hình)

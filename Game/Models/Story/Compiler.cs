@@ -617,6 +617,8 @@ public sealed class Compiler
             else if (mod.Contains("loa")) say.Kind = SayKind.Loa;
             if (mod.Contains("rất khẽ") || mod.Contains("thì thầm")) say.Whisper = true;   // chỉ là kiểu chữ (sân khấu 2.8)
             if (mod.Contains("to tiếng")) say.Loud = true;
+            // HUONG_DAN_DEV_CHUONG_3.md mục 2: ở bản trên, suốt màn xếp sổ và màn gắn lời kể, mọi lời của Kael là thì thầm
+            if (chapNo == 3 && say.Kind == SayKind.Say && name is "Kael" or "Veritas" && ((sceneNo == 2 && slot >= 1) || sceneNo == 3)) say.WhisperTren = true;
             code.Add(say);
         }
     }

@@ -549,9 +549,6 @@ Soren: "Tấm bìa thì anh đưa cho cố vấn. Cái thang này tôi giữ."
     - Kael: "Tôi có hẹn rồi: lên tới nơi tôi tháo. Chỗ này mới là cái sân."
     - Soren: "Tới nơi là chỗ nào thì tôi nói."
     - [TRẢ: "Lên tới nơi tôi tháo"]
-  - Nếu không:
-    - Kael: "Cái này tôi mang lên cho chỗ cấp con số xem. Ông có cấp con số không?"
-    - Soren: "Tôi giữ thang. Thế là đủ để thu nó."
   - (Kael gập cánh tay vào bụng. Một người lính bẻ nó ra. Người kia lần tới cái khóa dây đeo.)
   - Veritas: "Kael..."
   - (Cái thiết bị tuột khỏi cổ tay anh. Hình chiếu tắt.) [SPRITE: Veritas tắt]

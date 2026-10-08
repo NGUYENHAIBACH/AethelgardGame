@@ -26,7 +26,7 @@
 
   // ── nhân vật đã gặp: chưa chơi thì trống; chơi tới đâu, gặp ai thì người ấy ra đứng ở màn menu ──
   // Kael và những người đứng về phía anh ở bên phải, những người giữ thành phố ở bên trái; ai gặp trước đứng ngoài cùng.
-  const SIDES = { R: ['Kael', 'Doran', 'Me', 'Rian'], L: ['Helena', 'Vane', 'Soren', 'Ilsa', 'ALICE'] };
+  const SIDES = { R: ['Kael', 'Doran', 'Me', 'Rian'], L: ['Helena', 'Vane', 'Soren', 'Ilsa'] };
   const met = Saves.met(), castBox = $('heroCast');
   ['R', 'L'].forEach(side => {
     SIDES[side].filter(n => met.includes(n)).forEach((n, k) => {
@@ -38,9 +38,15 @@
       castBox.appendChild(im);
     });
   });
+  // A.L.I.C.E: cỗ máy trông coi cả thành phố, đứng chính giữa, cao hơn và ở sau mọi người (chữ tiêu đề che một phần cũng được)
+  if (met.includes('ALICE')) {
+    const im = document.createElement('img');
+    im.alt = ''; im.className = 'c boss'; im.src = '/assets/sprites/ALICE_Neutral.png';
+    castBox.appendChild(im);
+  }
   if (met.includes('Veritas') && met.includes('Kael')) {
     const im = document.createElement('img');
-    im.alt = ''; im.className = 'c holo'; im.src = '/assets/sprites/Veritas_Hologram.png';
+    im.alt = ''; im.className = 'c holo'; im.src = '/assets/sprites/Veritas_Hologram.png?v=2';
     castBox.appendChild(im);
   }
 
@@ -56,7 +62,66 @@
   const slots = $('slots');
   document.addEventListener('keydown', e => { if (e.key === 'Escape') slots.hidden = true; });
   document.addEventListener('click', e => {
-    if (!slots.hidden && !slots.contains(e.target) && !e.target.closest('[data-click],#btnLoad,#btnChapters')) slots.hidden = true;
+    if (!slots.hidden && !slots.contains(e.target) && !e.target.closest('[data-click],#btnLoad,#btnChapters,#btnEndings,#btnShards')) slots.hidden = true;
+  });
+
+  // ── kết cục đã xem: bảy ô, ô nào đã tới thì mở được bài học của nó (đi cả hai lối của một kết cục thì có cả hai) ──
+  $('btnEndings').addEventListener('click', () => {
+    const seen = Saves.endings();
+    slots.innerHTML = ''; slots.hidden = false;
+    const h = document.createElement('b');
+    h.textContent = 'Kết cục đã xem: ' + Object.keys(seen).length + '/7';
+    slots.appendChild(h);
+    for (let n = 1; n <= 7; n++) {
+      const list = seen[n] || [];
+      if (!list.length) {
+        const row = document.createElement('div'); row.className = 'slot ending-row locked';
+        row.innerHTML = '<div class="info"><b></b><span>Chưa tới.</span></div>';
+        row.querySelector('b').textContent = 'Kết cục ' + n + '/7';
+        slots.appendChild(row); continue;
+      }
+      list.forEach((e, k) => {
+        const d = document.createElement('details'); d.className = 'slot ending-row';
+        const s = document.createElement('summary');
+        s.textContent = e.title.replace('KẾT CỤC', 'Kết cục') + (list.length > 1 ? ' · lối ' + (k + 1) : '');
+        d.appendChild(s);
+        (e.lesson || []).forEach((t, i) => { const p = document.createElement('p'); p.textContent = t; if (i === 0) p.className = 'lesson-h'; d.appendChild(p); });
+        slots.appendChild(d);
+      });
+    }
+  });
+
+  // ── mảnh lưu trữ đã mở, gộp qua mọi lượt chơi: mảnh nào đã mở thì đọc lại được; mảnh chưa mở không lộ tên ──
+  let shardsTotal = 0;
+  fetch('/Game/Manifest').then(r => r.json()).then(m => { shardsTotal = m.shardsTotal || 0; }).catch(() => { });
+  $('btnShards').addEventListener('click', () => {
+    const seen = Saves.shards();
+    const total = Math.max(shardsTotal, ...Object.keys(seen).map(Number), 0);
+    slots.innerHTML = ''; slots.hidden = false;
+    const h = document.createElement('b');
+    h.textContent = 'Mảnh lưu trữ đã mở: ' + Object.keys(seen).length + '/' + total;
+    slots.appendChild(h);
+    const note = document.createElement('p'); note.className = 'slots-note';
+    note.textContent = 'Gộp qua mọi lượt chơi trên trình duyệt này. Có mảnh chỉ mở ở một nhánh, nên một lượt chơi không gom đủ được.';
+    slots.appendChild(note);
+    for (let n = 1; n <= total; n++) {
+      const sh = seen[n], num = String(n).padStart(2, '0');
+      if (!sh) {
+        const row = document.createElement('div'); row.className = 'slot ending-row locked';
+        row.innerHTML = '<div class="info"><b></b><span>Chưa mở.</span></div>';
+        row.querySelector('b').textContent = 'Mảnh ' + num;
+        slots.appendChild(row); continue;
+      }
+      const d = document.createElement('details'); d.className = 'slot ending-row';
+      const s = document.createElement('summary'); s.textContent = 'Mảnh ' + num + ': “' + sh.title + '”'; d.appendChild(s);
+      (sh.paras || []).forEach(p => {
+        const e = document.createElement('p'); e.textContent = p.text;
+        if (p.kind === 'head') e.className = 'lesson-h'; else if (p.kind === 'foot') e.className = 'foot';
+        d.appendChild(e);
+      });
+      slots.appendChild(d);
+    }
+    slots.scrollTop = 0;
   });
 
   // ── menu di động ──

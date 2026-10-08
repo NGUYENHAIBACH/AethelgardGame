@@ -5,12 +5,13 @@
   const $ = id => document.getElementById(id);
   const E = {
     stage: $('stage'), bgA: $('bgA'), bgB: $('bgB'), elev: $('elev'), cast: $('cast'), holo: $('holo'), shade: $('shade'),
-    bars: $('bars'), fillL: $('fillL'), fillD: $('fillD'), lblL: $('lblL'),
+    bars: $('bars'), fillL: $('fillL'), fillD: $('fillD'), lblL: $('lblL'), barD: $('barD'), barC: $('barC'), tip: $('tip'),
     toasts: $('toasts'), wrist: $('wrist'), dot: $('wristDot'),
     dialog: $('dialog'), name: $('name'), text: $('text'), more: $('more'),
     choices: $('choices'), card: $('card'), cardK: $('cardK'), cardT: $('cardT'), ending: $('ending'),
     finale: $('finale'), finaleRow: $('finaleRow'),
     notebook: $('notebook'), nbBody: $('nbBody'), shardCount: $('shardCount'),
+    guide: $('guide'), guideTitle: $('guideTitle'), guideBody: $('guideBody'),
     shardView: $('shardView'), shardTitle: $('shardTitle'), shardBody: $('shardBody'),
     logPanel: $('logPanel'), logBody: $('logBody'),
     savePanel: $('savePanel'), saveBody: $('saveBody'), saveTitle: $('saveTitle'),
@@ -80,7 +81,7 @@
     el.dataset.want = name;
     const img = new Image();
     img.onload = () => { if (el.dataset.want !== name) return; el.src = img.src; el.classList.add('show'); };
-    img.src = '/assets/sprites/' + f;
+    img.src = '/assets/sprites/' + f + (manifest.v ? '?v=' + manifest.v : '');
   }
 
   function setStage(st) {
@@ -129,6 +130,19 @@
     E.fillD.style.width = (S.scene.dmax ? Math.round(d / S.scene.dmax * 100) : 0) + '%';
   }
 
+  // Trận cuối: thanh trên là điểm Kael ghi được trước A.L.I.C.E, hàng dưới là ba chốt đang giữ ngoài cửa (mỗi lần gọi sai mất một)
+  function setDuel(d) {
+    const on = !!(d && d.on);
+    if (on) {
+      E.bars.hidden = false;
+      E.lblL.textContent = 'LUNG LAY · A.L.I.C.E';
+      E.fillL.style.width = Math.round(d.vung / (d.max || 10) * 100) + '%';
+      E.barC.querySelectorAll('i').forEach((el, k) => el.classList.toggle('lost', k < d.lost));
+    } else if (S.duel) E.bars.hidden = true;
+    E.barD.hidden = on; E.barC.hidden = !on;
+    S.duel = on;
+  }
+
   function applyScene(sc) {
     setBg(sc.bg, true);
     lit = null;
@@ -136,6 +150,7 @@
     E.elev.classList.toggle('on', !!sc.elev);
     setBars(!!sc.bars, sc.lmax, sc.dmax, sc.who);
     setBarValues(sc.l, sc.d);
+    S.duel = false; setDuel(sc.duel);
     Sound.bgm(sc.bgm || null);
     Sound.amb(sc.amb || null);
     S.chapter = sc.chapter || S.chapter;
@@ -191,6 +206,39 @@
 
   // Mảnh mở thành một khung giữa màn hình; đóng khung thì thanh bên hiện lại ở danh sách mảnh.
   const shardOpen = () => !E.shardView.hidden;
+
+  // ── hướng dẫn nhỏ cho ba kiểu màn chơi khác thường: chọn ghi chú, gắn lời kể (Chương 3), "Gọi ai?" (Chương 5) ──
+  const GUIDES = {
+    battle: ['Cách chơi: đối chất', [
+      'Người đối diện nói từng câu. Sau mỗi câu, bạn chọn một cách đáp.',
+      'Thanh "Lung lay" là họ đang nghiêng về phía bạn tới đâu. Thanh "Dao động" là bạn đang nghiêng về phía họ tới đâu.',
+      'Lời nói suông ít khi làm ai lung lay. Câu đáp nặng nhất là câu dựa trên thứ bạn đã tự thấy, tự đo, tự nghe: các ghi chú trong thiết bị cổ tay. Chưa kiếm được ghi chú ấy thì câu đáp ấy yếu đi hoặc không có.',
+      'Hết trận, thanh nào đầy thì kết quả ngả về bên ấy. Không thanh nào đầy thì hai bên chưa ai thuyết phục được ai. Cả ba kết quả đều đi tiếp, mỗi kết quả một ngả.']],
+    note: ['Cách chơi: xếp cuốn sổ', [
+      'Veritas hỏi từng câu. Bạn trả lời bằng cách chọn một ghi chú hoặc vật phẩm đang có trong thiết bị cổ tay.',
+      'Chọn chưa khớp thì không mất gì: cô nói một câu rồi cho chọn lại.',
+      'Không giữ thứ nào khớp thì bấm "Không có gì" ở cuối danh sách. Hai câu đầu không bỏ trống được.',
+      'Mỗi câu trả lời được là một mắt xích nối vào cuốn sổ. Sổ càng đủ, cuối chương càng có thêm lối đi.']],
+    link: ['Cách chơi: gắn lời kể vào sổ', [
+      'Veritas kể từng điều cô nhớ về ngày xưa. Bạn chọn mắt xích trong cuốn sổ mà điều ấy khớp vào.',
+      'Mắt xích ghi "(còn trống)" là chỗ lúc nãy bạn chưa nối được.',
+      'Thấy điều cô kể chưa khớp vào đâu thì bấm "Chưa gắn được vào đâu". Thấy nó trái với thứ bạn đang giữ thì bấm "Không khớp với thứ mình đang giữ".',
+      'Chọn chưa đúng thì được chọn lại, trừ điều đầu tiên: điều ấy chỉ tính lần chọn đầu.']],
+    call: ['Cách chơi: gọi ai ra trả lời', [
+      'A.L.I.C.E nói năm câu. Sau mỗi câu, bạn chọn gọi ai ra trả lời nó. Năm cái tên giống nhau ở cả năm câu.',
+      'Gọi đúng người thì thanh "Lung lay" tăng: 2 điểm nếu những việc bạn làm ở các chương trước đã đem người ấy tới đây, 1 điểm nếu chưa.',
+      'Gọi sai thì ngoài cửa vỡ một chốt. Vỡ cả ba chốt là thua ngay.',
+      'Hết năm câu, thanh "Lung lay" phải được từ 6 trên 10.',
+      'Trỏ chuột vào một cái tên để xem người ấy nói được về chuyện gì.']],
+  };
+  const guideOpen = () => !E.guide.hidden;
+  function openGuide(k) {
+    const g = GUIDES[k]; if (!g) return;
+    E.guideTitle.textContent = g[0]; E.guideBody.innerHTML = '';
+    g[1].forEach(t => { const p = document.createElement('p'); p.textContent = t; E.guideBody.appendChild(p); });
+    E.tip.hidden = true; E.guide.hidden = false; Saves.seeGuide(k);
+  }
+  function closeGuide() { E.guide.hidden = true; }
   function openShard(n) {
     const sh = S.nb.shards.find(s => s.n === n);
     if (!sh) return;
@@ -250,7 +298,8 @@
     if (st.loud) { E.stage.classList.remove('shake'); void E.stage.offsetWidth; E.stage.classList.add('shake'); }
 
     const shown = kind === 'board' ? st.text.replace(/~~/g, '') : st.text;
-    if (S.suppressLog) S.suppressLog = false; else logAdd(nm, shown);
+    // dòng đã ghi nhật ký rồi (vừa tải bản lưu, hoặc đang đọc lại sau khi bấm Back) thì không ghi lần nữa
+    if (S.suppressLog) S.suppressLog = false; else if (!(S.noLogBefore != null && S.idx - 1 < S.noLogBefore)) logAdd(nm, shown);
 
     E.text.innerHTML = '';
     E.more.style.visibility = 'hidden';
@@ -296,18 +345,25 @@
       case 'elev': E.elev.classList.toggle('on', !!st.on); break;
       case 'bars': setBars(!!st.on, st.lmax, st.dmax, st.who); break;
       case 'bar': setBarValues(st.l, st.d); break;
+      case 'duel': setDuel(st); break;
       case 'item':
-        if (!S.nb.items.some(i => i.name === st.name)) S.nb.items.push({ name: st.name, desc: st.desc });
+        if (S.nb.items.some(i => i.name === st.name)) break;   // đã có (đang đọc lại sau khi bấm Back): không báo lần nữa
+        S.nb.items.push({ name: st.name, desc: st.desc });
         if (!silent) { toast('Vật phẩm mới: ' + st.name); blinkWrist(); }
         break;
       case 'note':
-        if (!S.nb.notes.includes(st.name)) S.nb.notes.push(st.name);
+        if (S.nb.notes.includes(st.name)) break;
+        S.nb.notes.push(st.name);
         if (!silent) { toast('Ghi chú mới: ' + st.name); blinkWrist(); }
         break;
       case 'shard':
-        st.shards.forEach(sh => { if (!S.nb.shards.some(s => s.n === sh.n)) S.nb.shards.push(sh); });
-        if (!silent) { toast('Mảnh lưu trữ mới'); blinkWrist(); }   // chỉ một thông báo dù mở nhiều mảnh cùng lúc
+      {
+        const fresh = st.shards.filter(sh => !S.nb.shards.some(s => s.n === sh.n));
+        fresh.forEach(sh => S.nb.shards.push(sh));
+        Saves.seeShards(fresh);   // cho mục "Mảnh lưu trữ" ở menu
+        if (!silent && fresh.length) { toast('Mảnh lưu trữ mới'); blinkWrist(); }   // chỉ một thông báo dù mở nhiều mảnh cùng lúc
         break;
+      }
     }
     if (!silent && S.nbOpen) renderNotebook();
   }
@@ -360,7 +416,7 @@
   }
 
   function showChoices(p) {
-    S.skip = false; $('btnSkip').classList.remove('on');
+    // Skip vẫn bật qua điểm chọn: tới đây nó chỉ dừng chờ người chơi bấm, chọn xong thì chạy tiếp
     clearTimeout(S.autoTimer);
     let opts = p.options.slice();
     // nút lựa chọn, đáp án đối chất và năm nút "Gọi ai?" đều xáo thứ tự; danh sách ghi chú và mắt xích thì giữ nguyên
@@ -372,6 +428,18 @@
     opts.forEach((o, k) => {
       const b = document.createElement('button');
       b.className = 'choice' + (o.dim ? ' dim' : '') + (k === lastFew ? ' last' : ''); b.textContent = o.text;
+      if (o.hint) {
+        const sub = document.createElement('span'); sub.className = 'sub'; sub.textContent = o.hint; b.appendChild(sub);
+        const place = ev => {
+          E.tip.textContent = o.hint; E.tip.hidden = false;
+          const w = E.tip.offsetWidth, h = E.tip.offsetHeight;
+          E.tip.style.left = Math.max(8, Math.min(innerWidth - w - 8, ev.clientX + 16)) + 'px';
+          E.tip.style.top = Math.max(8, Math.min(innerHeight - h - 8, ev.clientY + 18)) + 'px';
+        };
+        b.addEventListener('mousemove', place);
+        b.addEventListener('mouseleave', () => { E.tip.hidden = true; });
+        b.addEventListener('click', () => { E.tip.hidden = true; });
+      }
       b.onclick = async () => {
         if (S.locked) return; S.locked = true;
         E.choices.hidden = true;
@@ -384,6 +452,14 @@
       };
       E.choices.appendChild(b);
     });
+    const gk = p.type === 'call' ? 'call' : p.type === 'battle' ? 'battle' : p.how;
+    if (GUIDES[gk]) {
+      const q = document.createElement('button');
+      q.className = 'guide-btn'; q.type = 'button'; q.textContent = '? Cách chơi';
+      q.onclick = () => openGuide(gk);
+      E.choices.prepend(q);
+      if (!Saves.guideSeen(gk)) openGuide(gk);
+    }
     E.choices.hidden = false;
     E.more.style.visibility = 'hidden';
   }
@@ -393,8 +469,9 @@
     E.dialog.hidden = true; E.choices.hidden = true;
     // Kết cục 7/7: ghép hình cuối, giữ vài giây, rồi mới hiện dòng kết cục
     if (p.final && p.final.length && !S.finaleShown) { S.finaleShown = true; showFinale(p.final, () => showEnding(p)); return; }
+    Saves.seeEnding(p.title, p.lesson);   // cho màn "Kết cục" ở menu
     const el = E.ending; el.innerHTML = '';
-    el.classList.toggle('clear', !!p.final);
+    el.classList.remove('sky'); el.classList.toggle('clear', !!p.final);
     const h = document.createElement('h2'); h.textContent = '━━ ' + p.title + ' ━━'; el.appendChild(h);
     const box = document.createElement('div'); box.className = 'lesson';
     p.lesson.forEach((t, i) => { const e = document.createElement('p'); e.textContent = t; if (i === 0) e.className = 'lesson-h'; box.appendChild(e); });
@@ -462,6 +539,7 @@
   // Màn kết game: sau Kết cục 7/7, không có đoạn kể nào thêm (HUONG_DAN_DEV_CHUONG_5.md mục 14, điểm 9)
   function showCredits(p) {
     const el = E.ending; el.innerHTML = '';
+    el.classList.add('sky');   // màn cuối: để sáng cho thấy trọn nền và những người đang đứng, chữ dồn lên phần trời
     const box = document.createElement('div'); box.className = 'credits';
     const add = (cls, text) => { const e = document.createElement('p'); e.className = cls; e.textContent = text; box.appendChild(e); };
     add('big', 'BẢN TÌNH CA CỦA THỜI ĐẠI');
@@ -502,22 +580,54 @@
 
   // ───────────────────────────────────────── nạp một loạt dòng từ máy chủ
 
+  // Lùi lại một dòng. Chỉ lùi trong đoạn từ điểm chọn gần nhất tới đây: không lùi qua một lựa chọn đã bấm
+  // (nhiều chỗ trong truyện chỉ cho chọn một lần, và các kết cục đã có nút quay lại riêng).
+  function back() {
+    if (S.locked || S.cardOpen || shardOpen() || guideOpen() || !S.batch || !E.ending.hidden) return;
+    const cur = !E.choices.hidden ? S.steps.length : S.idx - 1;
+    let j = cur - 1;
+    while (j >= 0 && S.steps[j].t !== 'say') j--;
+    if (j < 0) { toast('Không lùi thêm được: phía trước là một điểm chọn.'); return; }
+    S.auto = false; S.skip = false; $('btnAuto').classList.remove('on'); $('btnSkip').classList.remove('on');
+    clearTimeout(S.autoTimer);
+    E.tip.hidden = true;
+    S.noLogBefore = Math.max(S.noLogBefore || 0, cur + 1);
+    loadBatch(S.batch, j, true);
+    skipTyping();
+  }
+
   function loadBatch(b, startIdx, fromSave) {
+    if (b !== S.batch) S.noLogBefore = null;
+    S.batch = b;
     S.state = b.state; S.startState = b.startState; S.steps = b.steps; S.pause = b.pause;
     S.nb = JSON.parse(JSON.stringify(b.notebook));
+    Saves.seeShards(S.nb.shards);   // bản lưu cũ cũng góp mảnh của nó vào mục "Mảnh lưu trữ" ở menu
     S.idx = 0; S.waiting = false; S.typing = null; S.cardOpen = false;
     E.ending.hidden = true; E.ending.classList.remove('on'); E.choices.hidden = true;
     E.finale.hidden = true; E.finale.classList.remove('on'); S.finaleShown = false; S.finaleDone = null;
     closeShard(true);
-    applyScene(b.scene);
-    renderNotebook();
     const n = Math.min(startIdx || 0, S.steps.length);
-    // phát nhanh các bước đã qua (khi tải ván), không hiện thông báo, không ghi nhật ký (nhật ký lấy từ bản lưu)
+    // các bước đã qua (khi tải bản lưu hoặc bấm Back): không diễn lại từng bước, chỉ tính xem tới chỗ ấy sân khấu, nền, nhạc, thanh điểm
+    // đang ra sao rồi dựng một lần. Diễn lại thì sprite của cả đoạn chớp lên rồi tắt. Không hiện thông báo, không ghi nhật ký.
+    const sc = Object.assign({}, b.scene);
     for (let k = 0; k < n; k++) {
       const st = S.steps[k];
-      if (st.t === 'say') S.lastSay = st;
-      else if (st.t !== 'card') applyStep(st, true);
+      switch (st.t) {
+        case 'say': S.lastSay = st; break;
+        case 'card': case 'se': break;
+        case 'bg': sc.bg = st.v; break;
+        case 'bgm': sc.bgm = st.v || null; break;
+        case 'amb': sc.amb = st.v || null; break;
+        case 'stage': sc.stage = st; break;
+        case 'elev': sc.elev = !!st.on; break;
+        case 'bars': sc.bars = !!st.on; sc.lmax = st.lmax; sc.dmax = st.dmax; sc.who = st.who; break;
+        case 'bar': sc.l = st.l; sc.d = st.d; break;
+        case 'duel': sc.duel = st; break;
+        default: applyStep(st, true);   // vật phẩm, ghi chú, mảnh
+      }
     }
+    applyScene(sc);
+    renderNotebook();
     S.idx = n;
     S.suppressLog = !!fromSave;   // dòng đang hiện đã nằm sẵn trong nhật ký đã lưu
     if (n > 0 && n >= S.steps.length && S.lastSay) showSay(S.lastSay, true);
@@ -623,7 +733,8 @@
 
   document.querySelectorAll('.toolbar button').forEach(b => b.addEventListener('click', () => {
     const a = b.dataset.act;
-    if (a === 'log') openPanel('logPanel');
+    if (a === 'back') back();
+    else if (a === 'log') openPanel('logPanel');
     else if (a === 'auto') toggleAuto();
     else if (a === 'skip') setSkip(!S.skip);
     else if (a === 'save') openSavePanel('save');
@@ -635,13 +746,17 @@
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closePanels));
   document.querySelectorAll('#notebook .tabs button').forEach(b => b.addEventListener('click', () => { S.nbTab = b.dataset.tab; renderNotebook(); }));
   $('shardClose').addEventListener('click', () => closeShard());
+  $('guideClose').addEventListener('click', closeGuide);
+  $('guideOk').addEventListener('click', closeGuide);
+  E.guide.addEventListener('click', ev => { if (ev.target === E.guide) closeGuide(); });
 
   document.addEventListener('keydown', ev => {
     if (ev.target.closest && ev.target.closest('input, textarea')) return;
     if (ev.key === 'Control') { if (!S.skip) { S.holdSkip = true; setSkip(true); } return; }
-    if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); if (S.cardOpen) S.cardDone && S.cardDone(); else if (shardOpen()) closeShard(); else if (!anyPanel()) advance(); }
-    else if (ev.key === 'Escape') { if (shardOpen()) closeShard(); else closePanels(); }
-    else if (shardOpen()) return;
+    if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); if (guideOpen()) closeGuide(); else if (S.cardOpen) S.cardDone && S.cardDone(); else if (shardOpen()) closeShard(); else if (!anyPanel()) advance(); }
+    else if (ev.key === 'Escape') { if (guideOpen()) closeGuide(); else if (shardOpen()) closeShard(); else closePanels(); }
+    else if (ev.key === 'ArrowLeft' && !anyPanel()) back();
+    else if (shardOpen() || guideOpen()) return;
     else if (ev.key === 'l' || ev.key === 'L') openPanel('logPanel');
     else if (ev.key === 'n' || ev.key === 'N') (E.notebook.hidden ? openPanel('notebook') : closePanels());
     else if (ev.key === 'a' || ev.key === 'A') toggleAuto();

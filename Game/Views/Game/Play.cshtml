@@ -13,7 +13,8 @@
 
     <div id="bars" class="bars" hidden>
         <div class="bar lung"><span class="lbl" id="lblL">LUNG LAY</span><div class="track"><div class="fill" id="fillL"></div></div></div>
-        <div class="bar dao"><span class="lbl">DAO ĐỘNG</span><div class="track"><div class="fill" id="fillD"></div></div></div>
+        <div class="bar dao" id="barD"><span class="lbl">DAO ĐỘNG</span><div class="track"><div class="fill" id="fillD"></div></div></div>
+        <div class="bar chot" id="barC" hidden><span class="lbl">BA CHỐT ĐANG GIỮ NGOÀI CỬA</span><div class="pips"><i>Sân thang</i><i>Tấm cửa ngăn</i><i>Cái khe</i></div></div>
     </div>
 
     <div id="toasts" class="toasts"></div>
@@ -29,6 +30,7 @@
     </button>
 
     <div id="toolbar" class="toolbar">
+        <button data-act="back" title="Lùi lại một dòng (←)">Back</button>
         <button data-act="log" title="Nhật ký (L)">Log</button>
         <button data-act="auto" id="btnAuto" title="Tự động (A)">Auto</button>
         <button data-act="skip" id="btnSkip" title="Bỏ qua (giữ Ctrl)">Skip</button>
@@ -72,6 +74,14 @@
         </article>
     </div>
 
+    <div id="guide" class="shard-view guide" hidden>
+        <article class="shard-box" role="dialog" aria-labelledby="guideTitle">
+            <header><h3 id="guideTitle"></h3><button class="x" id="guideClose" aria-label="Đóng">✕</button></header>
+            <section id="guideBody" class="shard-body"></section>
+            <footer><button class="lb" id="guideOk" type="button">Đã hiểu</button></footer>
+        </article>
+    </div>
+
     <aside id="logPanel" class="panel" hidden>
         <header><h3>Nhật ký</h3><button class="x" data-close="logPanel" aria-label="Đóng">✕</button></header>
         <section id="logBody" class="log-body"></section>
@@ -91,6 +101,7 @@
         </section>
     </aside>
 
+    <div id="tip" class="tip" hidden></div>
     <div id="busy" class="busy" hidden>…</div>
 </div>
 @section Scripts {

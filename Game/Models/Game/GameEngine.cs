@@ -113,7 +113,7 @@ public sealed class GameEngine
             var sig = StageSig(s);
             var lit = Speak(s, say);
             if (StageSig(s) != sig) pre.Add(StageStep(s));
-            var d = SayStep(say);
+            var d = SayStep(say, s);
             if (lit != null) d["sp"] = lit;
             pre.Add(d);
         }
@@ -236,7 +236,7 @@ public sealed class GameEngine
                     var sig = StageSig(s);
                     var lit = Speak(s, say);
                     if (StageSig(s) != sig) steps.Add(StageStep(s));
-                    var d = SayStep(say);
+                    var d = SayStep(say, s);
                     if (lit != null) d["sp"] = lit;
                     steps.Add(d); s.Pc++; break;
                 }
@@ -281,6 +281,8 @@ public sealed class GameEngine
                 {
                     var snap = Clone(s); snap.Checkpoints = new();
                     s.Checkpoints[cp.Id.ToString()] = Ser(snap);
+                    // trận cuối bắt đầu: hiện thanh điểm và ba chốt (người viết yêu cầu 08/10/2026)
+                    if (cp.Id == Compiler.BattleCheckpoint) { s.Duel = true; steps.Add(DuelStep(s)); }
                     s.Pc++; break;
                 }
 
@@ -323,7 +325,7 @@ public sealed class GameEngine
                 case AskNoteI an:
                     b.Pause = new()
                     {
-                        ["type"] = "pick",
+                        ["type"] = "pick", ["how"] = "note",
                         ["options"] = NoteOptions(an, s).Select((o, k) => new Dictionary<string, object?> { ["i"] = k, ["text"] = o }).ToList(),
                     };
                     goto done;
@@ -331,7 +333,7 @@ public sealed class GameEngine
                 case AskLinkI al:
                     b.Pause = new()
                     {
-                        ["type"] = "pick",
+                        ["type"] = "pick", ["how"] = "link",
                         ["options"] = LinkOptions(al, s).Select((o, k) => new Dictionary<string, object?> { ["i"] = k, ["text"] = o.text, ["dim"] = o.dim }).ToList(),
                     };
                     goto done;
@@ -340,7 +342,10 @@ public sealed class GameEngine
                     b.Pause = new()
                     {
                         ["type"] = "call",
-                        ["options"] = ask.Names.Select((o, k) => new Dictionary<string, object?> { ["i"] = k, ["text"] = o }).ToList(),
+                        ["options"] = ask.Names.Select((o, k) => new Dictionary<string, object?>
+                        {
+                            ["i"] = k, ["text"] = o, ["hint"] = CallHints.GetValueOrDefault(o),
+                        }).ToList(),
                     };
                     goto done;
 
@@ -459,12 +464,12 @@ public sealed class GameEngine
 
     // ───────────────────────────────────────── từng loại lệnh
 
-    static Dictionary<string, object?> SayStep(SayI s)
+    static Dictionary<string, object?> SayStep(SayI s, GameState st)
     {
         var d = new Dictionary<string, object?> { ["t"] = "say", ["kind"] = s.Kind.ToString().ToLowerInvariant(), ["text"] = s.Text };
         if (s.Name.Length > 0) d["name"] = s.Name;
         if (s.Loud) d["loud"] = true;
-        if (s.Whisper) d["whisper"] = true;
+        if (s.Whisper || (s.WhisperTren && st.Flag("ban") == "tren")) d["whisper"] = true;
         if (s.WristTeal) d["teal"] = true;
         return d;
     }
@@ -486,6 +491,10 @@ public sealed class GameEngine
         // Chương 5 (HUONG_DAN_DEV_CHUONG_5.md mục 2)
         ["Cố vấn Corvin"] = "Bong_Co_van", ["Corvin"] = "Bong_Co_van", ["Người làm thuốc"] = "Bong_Nguoi_lam_thuoc",
         ["Thợ van"] = "Bong_Tho_van", ["Người nhà"] = "Bong_Nguoi_nha", ["Lính"] = "Bong_Linh",
+        // người phụ chờ vẽ bóng (lời tả ở tai_nguyen_sua/prompt_nen.md bên kho truyện): chưa có file thì không hiện gì, có file là tự hiện
+        ["Thư ký"] = "Bong_Thu_ky", ["Người bốc hàng"] = "Bong_Nguoi_boc_hang", ["Người dỡ hàng"] = "Bong_Nguoi_do_hang",
+        ["Bà cụ"] = "Bong_Ba_cu", ["Người phát suất"] = "Bong_Nguoi_phat_suat", ["Thợ học việc"] = "Bong_Tho_hoc_viec",
+        ["Người trong đám đông"] = "Bong_Dam_dong", ["Công nhân"] = "Bong_Dam_dong", ["Lính gác"] = "Bong_Linh_gac",
     };
 
     static string StageSig(GameState s) =>
@@ -513,6 +522,26 @@ public sealed class GameEngine
         if (say.Name == "A.L.I.C.E" && s.OnStage("ALICE") != null) return "ALICE";   // Chương 5 Cảnh 3: nó chỉ lên bằng thẻ
         return null;
     }
+
+    // ───────────────────────────────────────── trận cuối "Gọi ai?"
+
+    static Dictionary<string, object?> DuelView(GameState s) => new()
+    {
+        ["on"] = s.Duel, ["vung"] = Math.Clamp(s.Var("vung"), 0, 10), ["max"] = 10, ["lost"] = Math.Clamp(s.Var("mat_chot"), 0, 3),
+    };
+
+    static Dictionary<string, object?> DuelStep(GameState s) { var d = DuelView(s); d["t"] = "duel"; return d; }
+
+    /// <summary>Lời giải thích hiện khi người chơi trỏ vào từng nút "Gọi ai?" (người viết yêu cầu 08/10/2026: trận quá khó đoán).
+    /// Chữ do bên làm game soạn, chờ người viết sửa. Chỉ nói đó là ai và họ biết chuyện gì; không nói nút nào đúng.</summary>
+    public static readonly Dictionary<string, string> CallHints = new()
+    {
+        ["Tầng Đáy"] = "Thợ đúc, thợ bể tảo, mẹ Kael: những người làm ra cái ăn và đồ sắt. Họ biết suất bị bớt mấy lần, cái hòm thuốc về lúc nào, và vì sao họ dừng tay.",
+        ["Tầng Trung"] = "Thợ van, kỹ sư, mười hai nhà có người bỏng. Họ biết cái ống vỡ ra sao, và thứ gì đã bị xóa khỏi sổ sau hôm ấy.",
+        ["Người ký và người gác"] = "Những người làm theo lời đề nghị của cái loa: người ký danh sách, người đứng gác, người xếp hòm. Họ biết ai mới là người ra tay.",
+        ["Veritas"] = "Kho gốc của thành phố, hai trăm tuổi. Cô giữ con số của ngày xưa, thứ duy nhất đem ra so được với hôm nay.",
+        ["Cái lô chiều nay"] = "Lô tệp vừa bị gắn nhãn xóa của chính hôm nay. Trong ấy là những gì mới được ghi lại từ sáng, chưa ai mở ra đọc.",
+    };
 
     static (string name, string expr) SplitSprite(string v)
     {
@@ -565,8 +594,14 @@ public sealed class GameEngine
     {
         if (e.If != null && !e.If.Eval(s)) return;
         if (e.Unless != null && e.Unless.Eval(s)) return;
-        if (e.SetFlagValue != null) { s.Flags[e.Var] = e.SetFlagValue; return; }
+        if (e.SetFlagValue != null)
+        {
+            s.Flags[e.Var] = e.SetFlagValue;
+            if (e.Var == "tran" && s.Duel) { s.Duel = false; steps.Add(DuelStep(s)); }   // hết trận: cất thanh điểm
+            return;
+        }
         s.Add(e.Var, e.Delta);
+        if (s.Duel && e.Var is "vung" or "mat_chot") steps.Add(DuelStep(s));
         if (e.Delta > 0 && Trends.Contains(e.Var)) { s.TrendOrder.Remove(e.Var); s.TrendOrder.Add(e.Var); }
         if (e.Var == "lung_lay") s.Vars[e.Var] = Math.Clamp(s.Var(e.Var), 0, s.LMax > 0 ? s.LMax : int.MaxValue);
         if (e.Var == "dao_dong") s.Vars[e.Var] = Math.Clamp(s.Var(e.Var), 0, s.DMax > 0 ? s.DMax : int.MaxValue);
@@ -698,7 +733,7 @@ public sealed class GameEngine
 
     Dictionary<string, object?> SceneOf(GameState s) => new()
     {
-        ["bg"] = s.Bg, ["bgm"] = s.Bgm, ["amb"] = s.Amb, ["stage"] = StageView(s), ["elev"] = s.Elev,
+        ["bg"] = s.Bg, ["bgm"] = s.Bgm, ["amb"] = s.Amb, ["duel"] = DuelView(s), ["stage"] = StageView(s), ["elev"] = s.Elev,
         ["bars"] = s.Bars, ["lmax"] = s.LMax, ["dmax"] = s.DMax,
         ["who"] = s.Chapter < lib.Chapters.Count && lib.Chapters[s.Chapter].BattleKind == "vane" ? "Vane" : "Helena",
         ["l"] = s.Var("lung_lay"), ["d"] = s.Var("dao_dong"),

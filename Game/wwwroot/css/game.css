@@ -129,9 +129,21 @@ body.play { overflow: hidden; }
 @keyframes glitch { 0%, 88%, 100% { transform: translateX(-50%) } 90% { transform: translateX(calc(-50% - 9px)); filter: hue-rotate(80deg) } 94% { transform: translateX(calc(-50% + 8px)); filter: hue-rotate(-60deg) } 97% { transform: translateX(-50%) skewX(4deg) } }
 
 /* hai thanh đối chất */
-.bars { position: absolute; top: 54px; left: 50%; transform: translateX(-50%); width: min(620px, 78vw); display: grid; gap: 8px; z-index: 5; pointer-events: none; }
-.bar .lbl { font-size: .68rem; letter-spacing: .22em; color: var(--dim); }
+.bars { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); width: min(620px, 78vw); display: grid; gap: 8px; z-index: 5; pointer-events: none;
+  /* tấm nền tối: thanh và chữ vẫn đọc được khi đứng sau là sprite sáng màu (A.L.I.C.E) */
+  padding: 10px 14px 12px; border-radius: 10px; background: rgba(4, 8, 14, .82); border: 1px solid var(--line); backdrop-filter: blur(3px); }
+.bars[hidden] { display: none; }
+.bar .lbl { font-size: .68rem; letter-spacing: .22em; color: #c3ccd6; }
 .bar .track { height: 10px; border-radius: 6px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .15); overflow: hidden; }
+.bar[hidden] { display: none; }
+.bar.chot .pips { display: flex; gap: 8px; margin-top: 2px; }
+.bar.chot .pips i { flex: 1; font-style: normal; text-align: center; font-size: .74rem; padding: .22rem .3rem; border-radius: 6px; border: 1px solid rgba(61, 230, 200, .7); background: rgba(10, 46, 44, .95); color: #eafffb; font-weight: 600; transition: .6s; }
+.bar.chot .pips i.lost { border-color: rgba(224, 82, 79, .6); background: rgba(46, 14, 16, .95); color: #b9a3a3; font-weight: 400; text-decoration: line-through; }
+/* ô giải thích hiện theo con trỏ khi trỏ vào một nút "Gọi ai?" */
+.tip { position: fixed; z-index: 60; max-width: 340px; padding: .6rem .8rem; border-radius: 8px; background: rgba(6, 10, 18, .97); border: 1px solid var(--teal); color: var(--ink); font-size: .86rem; line-height: 1.55; pointer-events: none; box-shadow: 0 10px 30px rgba(0, 0, 0, .6); }
+.tip[hidden] { display: none; }
+.choice .sub { display: none; margin-top: .3rem; font-size: .82rem; color: var(--dim); line-height: 1.5; }
+@media (hover: none) { .choice .sub { display: block; } }   /* màn cảm ứng không có con trỏ: hiện luôn dưới tên nút */
 .bar .fill { height: 100%; width: 0; transition: width .7s cubic-bezier(.2, .8, .2, 1); }
 .bar.lung .fill { background: linear-gradient(90deg, #8d6d1d, var(--gold)); }
 .bar.dao .fill { background: linear-gradient(90deg, #1b8d7d, var(--teal)); }
@@ -213,6 +225,13 @@ body.play { overflow: hidden; }
 .finale-row { position: absolute; left: 0; right: 0; bottom: 9vh; display: flex; align-items: flex-end; justify-content: center; }
 .finale-row img { height: var(--kt-h, 50vh); margin: 0 -0.6vw; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .55)); }
 .ending.clear { background: rgba(2, 3, 7, .82); }
+.ending.sky { background: linear-gradient(to bottom, rgba(2, 3, 7, .5), rgba(2, 3, 7, 0) 42%); padding-top: 3.5vh; overflow: hidden; transition: background 1.2s; text-shadow: 0 1px 3px #000, 0 0 14px rgba(0, 0, 0, .9); }
+.ending.sky > :first-child { margin-top: 0; }
+.ending.sky > :last-child { margin-bottom: 0; }
+.ending.sky .credits { gap: .25rem; line-height: 1.5; max-width: 760px; }
+.ending.sky .credits .big { font-size: clamp(1.2rem, 3vw, 1.9rem); }
+.ending.sky .credits .dim { color: #e6ebf1; font-size: .85rem; }
+.ending.sky .end-btns { margin-top: .8rem; }
 .trend { max-width: 760px; text-align: left; margin-top: 1.2rem; border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 10px; padding: 1.1rem 1.6rem; display: grid; gap: .7rem; line-height: 1.7; background: rgba(12, 18, 30, .9); }
 .trend p { margin: 0; }
 .trend .trend-h { font-weight: 700; color: var(--gold); letter-spacing: .04em; }
@@ -260,6 +279,13 @@ body.play { overflow: hidden; }
 .link { background: none; border: 0; color: var(--teal); padding: 0; margin-bottom: .6rem; }
 .shard-view { position: absolute; inset: 0; z-index: 38; background: rgba(2, 4, 9, .62); display: grid; place-items: center; padding: 4vh 4vw; animation: shardin .2s; }
 .shard-view[hidden] { display: none; }
+.guide .shard-box { width: min(620px, 100%); }
+.guide .shard-box h3 { color: var(--teal); }
+.guide .shard-box footer { padding: .2rem 1.4rem 1.2rem; text-align: right; }
+.guide .shard-box footer button { padding: .5rem 1.4rem; border-radius: 8px; border: 1px solid var(--teal); background: rgba(61, 230, 200, .14); color: var(--ink); font-size: .95rem; }
+.guide .shard-box footer button:hover { background: rgba(61, 230, 200, .28); }
+.guide-btn { align-self: center; width: min(780px, 100%); text-align: right; background: none; border: 0; color: var(--teal); font-size: .85rem; padding: 0 .2rem; margin-bottom: -4px; }
+.guide-btn:hover { text-decoration: underline; }
 .shard-box { width: min(760px, 100%); max-height: min(82vh, 100%); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 18px 60px rgba(0, 0, 0, .6); }
 .shard-box header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1.2rem; border-bottom: 1px solid var(--line); }
 .shard-box h3 { margin: 0; font-size: 1.08rem; color: var(--gold); line-height: 1.4; }

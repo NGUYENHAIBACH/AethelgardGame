@@ -273,6 +273,7 @@ public sealed class CheckController : Controller
                         }
                         break;
                     case "unitem": sb.AppendLine($"  <VẬT PHẨM RỜI TÚI: {s["name"]}>"); break;
+                    case "duel": sb.AppendLine($"  <trận cuối {(((bool)s["on"]!) ? "hiện" : "ẩn")}: lung lay {s["vung"]}/10, mất {s["lost"]} chốt>"); break;
                     case "amb": sb.AppendLine($"  <tiếng lặp {s["v"]}>"); break;
                     case "bar": sb.AppendLine($"  <thanh Lung lay={s["l"]} Dao động={s["d"]}>"); break;
                     case "bars": sb.AppendLine($"  <hai thanh {(((bool)s["on"]!) ? "hiện" : "ẩn")}>"); break;
