@@ -24,6 +24,26 @@
     }, 7000);
   }
 
+  // ── nhân vật đã gặp: chưa chơi thì trống; chơi tới đâu, gặp ai thì người ấy ra đứng ở màn menu ──
+  // Kael và những người đứng về phía anh ở bên phải, những người giữ thành phố ở bên trái; ai gặp trước đứng ngoài cùng.
+  const SIDES = { R: ['Kael', 'Doran', 'Me', 'Rian'], L: ['Helena', 'Vane', 'Soren', 'Ilsa', 'ALICE'] };
+  const met = Saves.met(), castBox = $('heroCast');
+  ['R', 'L'].forEach(side => {
+    SIDES[side].filter(n => met.includes(n)).forEach((n, k) => {
+      const im = document.createElement('img');
+      im.alt = ''; im.className = 'c ' + (side === 'R' ? 'r' : 'l');
+      im.style.setProperty('--k', k);
+      im.style.zIndex = 20 - k;
+      im.src = `/assets/sprites/${n}_Neutral.png`;
+      castBox.appendChild(im);
+    });
+  });
+  if (met.includes('Veritas') && met.includes('Kael')) {
+    const im = document.createElement('img');
+    im.alt = ''; im.className = 'c holo'; im.src = '/assets/sprites/Veritas_Hologram.png';
+    castBox.appendChild(im);
+  }
+
   // ── liên kết điều hướng gọi lại các nút của menu.js ──
   document.querySelectorAll('[data-click]').forEach(a => a.addEventListener('click', e => {
     e.preventDefault(); const t = $(a.dataset.click); if (t && !t.hidden) t.click(); setMenu(false);
@@ -32,7 +52,7 @@
   const syncChap = () => document.querySelectorAll('[data-click="btnChapters"]').forEach(a => a.hidden = $('btnChapters').hidden);
   syncChap();
 
-  // ── bảng ván lưu: đóng bằng Esc / bấm ra ngoài ──
+  // ── bảng bản lưu: đóng bằng Esc / bấm ra ngoài ──
   const slots = $('slots');
   document.addEventListener('keydown', e => { if (e.key === 'Escape') slots.hidden = true; });
   document.addEventListener('click', e => {

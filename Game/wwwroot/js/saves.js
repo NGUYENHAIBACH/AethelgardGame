@@ -24,6 +24,13 @@ const Saves = (() => {
       try { const v = sessionStorage.getItem('aeth_pending'); sessionStorage.removeItem('aeth_pending'); return v ? JSON.parse(v) : null; }
       catch { return null; }
     },
+    // nhân vật đã gặp (tiền tố sprite), để màn menu hiện dần theo chặng đã chơi
+    met: () => get('aeth_met') || [],
+    meet(names) {
+      const cur = get('aeth_met') || [];
+      const add = names.filter(n => n && !cur.includes(n));
+      if (add.length) set('aeth_met', cur.concat(add));
+    },
     settings: () => Object.assign({ bgm: 0.6, se: 0.8, cps: 45 }, get('aeth_settings') || {}),
     saveSettings: s => set('aeth_settings', s),
   };

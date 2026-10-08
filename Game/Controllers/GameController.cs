@@ -55,7 +55,7 @@ public sealed class GameController : Controller
         }
         return Json(new
         {
-            bg = Scan("bg", ".jpg", ".jpeg", ".png", ".webp"),
+            bg = Scan("bg", ".jpg", ".jpeg", ".png", ".webp", ".svg"),   // .svg: nền tạm vẽ bằng nét
             sprites = Scan("sprites", ".png", ".webp"),
             bgm = Scan("bgm", ".mp3", ".ogg", ".wav"),
             se = Scan("se", ".mp3", ".ogg", ".wav"),

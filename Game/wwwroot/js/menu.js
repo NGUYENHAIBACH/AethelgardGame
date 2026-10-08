@@ -4,7 +4,7 @@
   if (auto) $('btnContinue').hidden = false;
 
   $('btnNew').addEventListener('click', e => {
-    if (auto && !confirm('Bắt đầu ván mới sẽ thay ván tự động lưu hiện có (các ô lưu thủ công vẫn giữ). Tiếp tục?')) e.preventDefault();
+    if (auto && !confirm('Chơi mới sẽ thay bản tự động lưu hiện có (các ô lưu thủ công vẫn giữ). Tiếp tục?')) e.preventDefault();
   });
 
   const chapters = Saves.chapters();
@@ -33,7 +33,7 @@
       const s = Saves.slot(n);
       rows.push({ label: 'Ô ' + n, sub: s ? (s.chapter || '') + ' · ' + new Date(s.time).toLocaleString('vi-VN') : 'Trống', note: s ? s.snippet : '', rec: s, btn: 'Tải' });
     }
-    listSlots('Tải ván đã lưu', rows);
+    listSlots('Tải bản lưu', rows);
   });
 
   $('btnChapters').addEventListener('click', () => {

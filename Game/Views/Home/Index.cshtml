@@ -13,7 +13,7 @@
 <div class="frame">
   <div class="bgs" id="bgs" aria-hidden="true"></div>
   <div class="veil"></div>
-  <div class="kael" aria-hidden="true"></div>
+  <div class="cast" id="heroCast" aria-hidden="true"></div>
 
   <header class="bar" data-open="false">
     <a class="brand" href="/" aria-label="Aethelgard — trang chủ">
@@ -25,20 +25,17 @@
       <span>AETHELGARD</span>
     </a>
     <nav class="links" aria-label="Chính">
-      <a href="/Game/Play?new=1" data-click="btnNew">Chơi mới</a>
-      <a href="#" data-click="btnLoad">Tải ván đã lưu</a>
       <a href="#" data-click="btnChapters" hidden>Chọn chương</a>
       @if (Env.IsDevelopment()) { <a href="/Check">Trang kiểm tra</a> }
     </nav>
     <div class="actions">
-      <a class="lb ghost" href="#" data-click="btnLoad">Tải ván</a>
+      <a class="lb ghost" href="#" data-click="btnLoad">Tải bản lưu</a>
       <a class="lb solid" href="/Game/Play?new=1" data-click="btnNew">Chơi mới</a>
       <button class="menu-btn" id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu-sheet">
         <svg viewBox="0 0 20 14" fill="none" aria-hidden="true"><path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
     </div>
     <nav class="sheet" id="menu-sheet" aria-label="Menu">
-      <a href="#" data-click="btnLoad">Tải ván đã lưu</a>
       <a href="#" data-click="btnChapters" hidden>Chọn chương</a>
       @if (Env.IsDevelopment()) { <a href="/Check">Trang kiểm tra</a> }
       <a class="lb solid" href="/Game/Play?new=1" data-click="btnNew">Chơi mới</a>
@@ -57,7 +54,7 @@
       <div class="cta">
         <a class="lb solid" href="/Game/Play?new=1" id="btnNew">Chơi mới</a>
         <a class="lb ghost" href="/Game/Play" id="btnContinue" hidden>Tiếp tục</a>
-        <button class="lb ghost" id="btnLoad" type="button">Tải ván đã lưu</button>
+        <button class="lb ghost sr" id="btnLoad" type="button">Tải bản lưu</button>
         <button id="btnChapters" type="button" hidden class="sr">Chọn chương đã qua</button>
       </div>
     </main>

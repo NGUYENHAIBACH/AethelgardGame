@@ -152,7 +152,7 @@ body.play { overflow: hidden; }
 @keyframes wblink { 0%, 100% { box-shadow: none } 50% { box-shadow: 0 0 0 4px rgba(230, 189, 98, .45); border-color: var(--gold) } }
 @keyframes tealp { 0%, 100% { box-shadow: none } 40% { box-shadow: 0 0 0 7px rgba(61, 230, 200, .55), 0 0 28px rgba(61, 230, 200, .8); background: rgba(61, 230, 200, .35) } }
 
-.toolbar { position: absolute; top: 10px; left: 12px; z-index: 31; display: flex; gap: 6px; flex-wrap: wrap; max-width: calc(100vw - 80px); }
+.toolbar { position: absolute; top: 10px; left: 12px; z-index: 41; /* nổi trên cả thẻ tên chương: lúc nào cũng bấm được Menu */ display: flex; gap: 6px; flex-wrap: wrap; max-width: calc(100vw - 80px); }
 .toolbar button { background: rgba(8, 12, 20, .72); border: 1px solid var(--line); border-radius: 6px; padding: .3rem .65rem; font-size: .78rem; }
 .toolbar button:hover { border-color: var(--teal); }
 .toolbar button.on { background: rgba(61, 230, 200, .25); border-color: var(--teal); }

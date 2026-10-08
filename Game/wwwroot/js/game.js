@@ -86,6 +86,7 @@
   function setStage(st) {
     const v = (st && st.v) || [], holo = (st && st.holo) || null, shadow = (st && st.shadow) || null;
     const names = new Set(v.map(a => a.n));
+    Saves.meet(v.map(a => a.n).concat(holo ? ['Veritas'] : []));   // màn menu hiện những người đã gặp
     castEls.forEach((el, n) => {
       if (names.has(n)) return;
       castEls.delete(n); el.classList.remove('show'); setTimeout(() => el.remove(), 320);
@@ -549,7 +550,7 @@
   }
 
   function openSavePanel(mode) {
-    E.saveTitle.textContent = mode === 'save' ? 'Lưu ván' : 'Tải ván';
+    E.saveTitle.textContent = mode === 'save' ? 'Lưu bản' : 'Tải bản lưu';
     E.saveBody.innerHTML = '';
     const mk = (label, rec, n) => {
       const row = document.createElement('div'); row.className = 'slot';
@@ -628,7 +629,7 @@
     else if (a === 'save') openSavePanel('save');
     else if (a === 'load') openSavePanel('load');
     else if (a === 'settings') openPanel('setPanel');
-    else if (a === 'menu') { if (confirm('Về menu? Ván hiện tại đã được tự động lưu.')) { autosave(!E.choices.hidden); location.href = '/'; } }
+    else if (a === 'menu') { autosave(!E.choices.hidden); toast('Đã tự động lưu. Đang về menu…'); setTimeout(() => { location.href = '/'; }, 350); }
   }));
   E.wrist.addEventListener('click', () => (E.notebook.hidden ? openPanel('notebook') : closePanels()));
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closePanels));
