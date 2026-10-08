@@ -10,6 +10,7 @@
     dialog: $('dialog'), name: $('name'), text: $('text'), more: $('more'),
     choices: $('choices'), card: $('card'), cardK: $('cardK'), cardT: $('cardT'), ending: $('ending'),
     notebook: $('notebook'), nbBody: $('nbBody'), shardCount: $('shardCount'),
+    shardView: $('shardView'), shardTitle: $('shardTitle'), shardBody: $('shardBody'),
     logPanel: $('logPanel'), logBody: $('logBody'),
     savePanel: $('savePanel'), saveBody: $('saveBody'), saveTitle: $('saveTitle'),
     setPanel: $('setPanel'), busy: $('busy'),
@@ -25,7 +26,7 @@
     log: [], typing: null, waiting: false, auto: false, skip: false, autoTimer: 0,
     cardOpen: false, locked: false, lastSay: null, chapter: '',
     scene: { bg: null, sprite: null, elev: false, bars: false, lmax: 0, dmax: 0, l: 0, d: 0, who: 'Helena' },
-    nbTab: 'items', openShard: null, bgFront: 'A', curBg: null,
+    nbTab: 'items', bgFront: 'A', curBg: null,
   };
 
   // ───────────────────────────────────────── gọi máy chủ
@@ -167,33 +168,40 @@
       body.appendChild(ul);
     } else {
       if (!S.nb.shards.length) return empty('Chưa có mảnh lưu trữ nào.');
-      if (S.openShard != null) {
-        const sh = S.nb.shards.find(s => s.n === S.openShard);
-        if (sh) {
-          const back = document.createElement('button'); back.className = 'link'; back.textContent = '← Danh sách mảnh';
-          back.onclick = () => { S.openShard = null; renderNotebook(); }; body.appendChild(back);
-          const h = document.createElement('h4'); h.className = 'shard-h'; h.textContent = 'Mảnh ' + String(sh.n).padStart(2, '0') + ': “' + sh.title + '”'; body.appendChild(h);
-          sh.paras.forEach(p => {
-            const e = document.createElement('p');
-            e.textContent = p.text;
-            if (p.kind === 'head') e.className = 'stance-head' + (p.hi ? ' hi' : '');
-            else if (p.kind === 'foot') e.className = 'foot';
-            else if (p.hi === true) e.className = 'hi-body';
-            else if (p.hi === false) e.className = 'lo-body';
-            body.appendChild(e);
-          });
-          return;
-        }
-      }
       S.nb.shards.slice().sort((a, b) => a.n - b.n).forEach(sh => {
         const b = document.createElement('button'); b.className = 'shard-row';
         b.innerHTML = '<span class="n"></span><span class="t"></span>';
         b.querySelector('.n').textContent = String(sh.n).padStart(2, '0');
         b.querySelector('.t').textContent = sh.title;
-        b.onclick = () => { S.openShard = sh.n; renderNotebook(); };
+        b.onclick = () => openShard(sh.n);
         body.appendChild(b);
       });
     }
+  }
+
+  // Mảnh mở thành một khung giữa màn hình; đóng khung thì thanh bên hiện lại ở danh sách mảnh.
+  const shardOpen = () => !E.shardView.hidden;
+  function openShard(n) {
+    const sh = S.nb.shards.find(s => s.n === n);
+    if (!sh) return;
+    E.shardTitle.textContent = 'Mảnh ' + String(sh.n).padStart(2, '0') + ': “' + sh.title + '”';
+    const body = E.shardBody; body.innerHTML = ''; body.scrollTop = 0;
+    sh.paras.forEach(p => {
+      const e = document.createElement('p');
+      e.textContent = p.text;
+      if (p.kind === 'head') e.className = 'stance-head' + (p.hi ? ' hi' : '');
+      else if (p.kind === 'foot') e.className = 'foot';
+      else if (p.hi === true) e.className = 'hi-body';
+      else if (p.hi === false) e.className = 'lo-body';
+      body.appendChild(e);
+    });
+    closePanels();
+    E.shardView.hidden = false;
+  }
+  function closeShard(noReopen) {
+    if (!shardOpen()) return;
+    E.shardView.hidden = true;
+    if (!noReopen) { S.nbTab = 'shards'; openPanel('notebook'); }
   }
 
   // ───────────────────────────────────────── phát dòng
@@ -304,7 +312,7 @@
   }
 
   function advance() {
-    if (S.locked || S.cardOpen) return;
+    if (S.locked || S.cardOpen || shardOpen()) return;
     if (!E.choices.hidden || !E.ending.hidden) return;
     if (skipTyping()) return;
     if (!S.waiting) return;
@@ -417,6 +425,7 @@
     S.nb = JSON.parse(JSON.stringify(b.notebook));
     S.idx = 0; S.waiting = false; S.typing = null; S.cardOpen = false;
     E.ending.hidden = true; E.ending.classList.remove('on'); E.choices.hidden = true;
+    closeShard(true);
     applyScene(b.scene);
     renderNotebook();
     const n = Math.min(startIdx || 0, S.steps.length);
@@ -519,7 +528,10 @@
   document.addEventListener('pointerdown', () => Sound.unlock(), { once: false });
 
   E.stage.addEventListener('click', ev => {
-    if (ev.target.closest('.toolbar, .panel, .choices, .wrist, .ending, .toasts')) return;
+    // xét theo đường đi của cú bấm lúc nó xảy ra: nút vừa bấm có thể đã bị vẽ lại (gỡ khỏi trang) trước khi tới đây
+    const inUi = ev.composedPath().some(el => el.matches && el.matches('.toolbar, .panel, .choices, .wrist, .ending, .toasts, .shard-box'));
+    if (inUi) return;
+    if (shardOpen()) { closeShard(); return; }
     if (anyPanel()) { closePanels(); return; }
     if (S.cardOpen) { S.cardDone && S.cardDone(); return; }
     advance();
@@ -537,13 +549,15 @@
   }));
   E.wrist.addEventListener('click', () => (E.notebook.hidden ? openPanel('notebook') : closePanels()));
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closePanels));
-  document.querySelectorAll('#notebook .tabs button').forEach(b => b.addEventListener('click', () => { S.nbTab = b.dataset.tab; S.openShard = null; renderNotebook(); }));
+  document.querySelectorAll('#notebook .tabs button').forEach(b => b.addEventListener('click', () => { S.nbTab = b.dataset.tab; renderNotebook(); }));
+  $('shardClose').addEventListener('click', () => closeShard());
 
   document.addEventListener('keydown', ev => {
     if (ev.target.closest && ev.target.closest('input, textarea')) return;
     if (ev.key === 'Control') { if (!S.skip) { S.holdSkip = true; setSkip(true); } return; }
-    if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); if (S.cardOpen) S.cardDone && S.cardDone(); else if (!anyPanel()) advance(); }
-    else if (ev.key === 'Escape') closePanels();
+    if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); if (S.cardOpen) S.cardDone && S.cardDone(); else if (shardOpen()) closeShard(); else if (!anyPanel()) advance(); }
+    else if (ev.key === 'Escape') { if (shardOpen()) closeShard(); else closePanels(); }
+    else if (shardOpen()) return;
     else if (ev.key === 'l' || ev.key === 'L') openPanel('logPanel');
     else if (ev.key === 'n' || ev.key === 'N') (E.notebook.hidden ? openPanel('notebook') : closePanels());
     else if (ev.key === 'a' || ev.key === 'A') toggleAuto();
