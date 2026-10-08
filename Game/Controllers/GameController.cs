@@ -59,6 +59,7 @@ public sealed class GameController : Controller
             sprites = Scan("sprites", ".png", ".webp"),
             bgm = Scan("bgm", ".mp3", ".ogg", ".wav"),
             se = Scan("se", ".mp3", ".ogg", ".wav"),
+            ending = Scan("ending", ".png", ".webp"),
             chapters = lib.Chapters.Select(c => c.Title).ToArray(),
         });
     }

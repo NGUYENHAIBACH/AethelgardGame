@@ -27,7 +27,12 @@ public sealed class GameEngine
     public GameEngine(StoryLibrary lib) { this.lib = lib; }
 
     public static string Ser(GameState s) => JsonSerializer.Serialize(s, J);
-    public static GameState Deser(string json) => JsonSerializer.Deserialize<GameState>(json, J) ?? new GameState();
+    public static GameState Deser(string json)
+    {
+        var s = JsonSerializer.Deserialize<GameState>(json, J) ?? new GameState();
+        s.UpgradeLegacy();
+        return s;
+    }
     static GameState Clone(GameState s) => Deser(Ser(s));
 
     public GameState NewGame() => new();
@@ -40,7 +45,11 @@ public sealed class GameEngine
 
     public Batch Continue(GameState s)
     {
-        if (CurrentInstr(s) is ChapterEndI && s.Chapter + 1 < lib.Chapters.Count) { s.Chapter++; s.Pc = 0; }
+        if (CurrentInstr(s) is ChapterEndI && s.Chapter + 1 < lib.Chapters.Count)
+        {
+            s.Chapter++; s.Pc = 0;
+            s.ClearStage(); s.Bgm = null;   // sang chương mới: gỡ hết, tắt nhạc
+        }
         return Run(s);
     }
 
@@ -63,8 +72,124 @@ public sealed class GameEngine
             if (index < 0 || index >= el.Count) throw new ArgumentOutOfRangeException(nameof(index));
             s.Pc = el[index].Addr;
         }
+        else if (ins is AskNoteI an) return Run(s, ChooseNote(s, an, index));
+        else if (ins is AskLinkI al) return Run(s, ChooseLink(s, al, index));
+        else if (ins is AskCallI call)
+        {
+            if (index < 0 || index >= call.Names.Count) throw new ArgumentOutOfRangeException(nameof(index));
+            var name = call.Names[index];
+            s.Flags["goi"] = name;
+            // chỉ dùng ở đoạn "Thắng": người thắng dù gọi sai ở Câu 5 (HUONG_DAN_DEV_CHUONG_5.md mục 3)
+            if (call.Cau == 5) s.Flags["sai_cau_5"] = name == call.Correct ? "khong" : "co";
+            s.Pc++;
+        }
         else throw new InvalidOperationException("Trạng thái không đang chờ lựa chọn.");
         return Run(s);
+    }
+
+    // ───────────────────────────────────────── Chương 3: màn xếp sổ và màn gắn lời kể
+
+    const string NoneText = "Không có gì", NotYetText = "Chưa gắn được vào đâu", NoMatchText = "Không khớp với thứ mình đang giữ";
+
+    static bool Holds(GameState s, PickAnswer a) => a.Pseudo != null ? a.Pseudo.Eval(s) : s.HasNote(a.Key) || s.HasItem(a.Key);
+
+    /// <summary>Danh sách chọn của màn xếp sổ: mọi ghi chú và vật phẩm đang có, dòng tự thêm (nếu có), rồi "Không có gì".</summary>
+    public static List<string> NoteOptions(AskNoteI a, GameState s)
+    {
+        var l = s.Notes.Concat(s.Items.Select(x => x.Name)).ToList();
+        l.AddRange(a.Answers.Where(x => x.Pseudo != null && x.Pseudo.Eval(s)).Select(x => x.Key));
+        l.Add(NoneText);
+        return l;
+    }
+
+    List<Dictionary<string, object?>> VeritasSays(GameState s, params (string who, string text)[] lines)
+    {
+        var pre = new List<Dictionary<string, object?>>();
+        foreach (var (who, text) in lines)
+        {
+            if (text.Length == 0) continue;
+            // bản trên: hai người đang ngồi giữa xưởng lưu trữ, chỉ thì thầm
+            var say = new SayI { Kind = SayKind.Say, Name = who, Text = text, Whisper = s.Flag("ban") == "tren" };
+            var sig = StageSig(s);
+            var lit = Speak(s, say);
+            if (StageSig(s) != sig) pre.Add(StageStep(s));
+            var d = SayStep(say);
+            if (lit != null) d["sp"] = lit;
+            pre.Add(d);
+        }
+        return pre;
+    }
+
+    List<Dictionary<string, object?>>? ChooseNote(GameState s, AskNoteI a, int index)
+    {
+        var opts = NoteOptions(a, s);
+        if (index < 0 || index >= opts.Count) throw new ArgumentOutOfRangeException(nameof(index));
+        var pick = opts[index];
+        string mx = "mat_xich_" + a.Slot;
+        if (pick == NoneText)
+        {
+            bool holds = a.Answers.Any(x => Holds(s, x));
+            // mắt xích 1 và 2 không bỏ trống được; mắt xích khác: đang giữ thứ khớp thì Veritas nhắc một lần
+            if (a.NoneAddr < 0 || (holds && s.Flag("nhac_" + a.Slot) != "co"))
+            {
+                if (a.NoneAddr >= 0) s.Flags["nhac_" + a.Slot] = "co";
+                return VeritasSays(s, ("Veritas", a.Remind));
+            }
+            s.Flags[mx] = "khong";
+            s.Pc = a.NoneAddr;
+            return null;
+        }
+        var ans = a.Answers.FirstOrDefault(x => x.Pseudo != null ? pick == x.Key : pick.StartsWith(x.Key, StringComparison.Ordinal));
+        if (ans == null)
+        {
+            int k = s.Var("chon_sai"); s.Add("chon_sai", 1);
+            return VeritasSays(s, ("Veritas", a.Wrong.Count > 0 ? a.Wrong[k % a.Wrong.Count] : ""));
+        }
+        s.Flags[mx] = "co";
+        s.Add("so_cai", 1);
+        s.Pc = ans.Addr < 0 ? s.Pc + 1 : ans.Addr;
+        return null;
+    }
+
+    /// <summary>Danh sách chọn của màn gắn: các mắt xích của Cảnh 2 (5 và 6 chỉ hiện khi có; 3 và 4 bỏ trống thì mờ), rồi hai nút.</summary>
+    public static List<(string text, int link, bool dim)> LinkOptions(AskLinkI a, GameState s)
+    {
+        var l = new List<(string, int, bool)>();
+        for (int n = 1; n <= a.Links.Count; n++)
+        {
+            bool joined = s.Flag("mat_xich_" + n) == "co";
+            if (n >= 5 && !joined) continue;
+            l.Add((joined ? a.Links[n - 1] : a.Links[n - 1] + " (còn trống)", n, !joined));
+        }
+        l.Add((NotYetText, 0, false));
+        l.Add((NoMatchText, -1, false));
+        return l;
+    }
+
+    List<Dictionary<string, object?>>? ChooseLink(GameState s, AskLinkI a, int index)
+    {
+        var opts = LinkOptions(a, s);
+        if (index < 0 || index >= opts.Count) throw new ArgumentOutOfRangeException(nameof(index));
+        var (_, link, dim) = opts[index];
+        bool mx3 = s.Flag("mat_xich_3") == "co", mx4 = s.Flag("mat_xich_4") == "co";
+        string? result = null;      // giá trị của dieu_N khi đáp đúng
+        switch (a.Slot)
+        {
+            case 1:   // chỉ chọn một lần: bác ngay hay không
+                s.Flags["bac_dung"] = link == -1 ? "co" : "khong";
+                s.Pc++; return null;
+            case 2: if (link == 2) result = "2"; break;
+            case 3: if (mx3 ? link == 3 : link == 0) result = mx3 ? "gan" : "treo"; break;
+            case 4: if (link == 1 || (link == 4 && mx4)) result = link.ToString(); break;
+            case 5: if (link == 0) result = "treo"; else if (link == 2) result = "2"; break;
+        }
+        if (result != null) { s.Flags["dieu_" + a.Slot] = result; s.Pc++; return null; }
+
+        if (link == -1) return VeritasSays(s, ("Veritas", a.NoMatchV), ("Kael", a.NoMatchK));
+        if (link > 0 && dim) return VeritasSays(s, ("Veritas", a.Empty));
+        if (link == 0) return VeritasSays(s, ("Veritas", a.HasPlace));
+        int k = s.Var("gan_sai"); s.Add("gan_sai", 1);
+        return VeritasSays(s, ("Veritas", a.Wrong.Count > 0 ? a.Wrong[k % a.Wrong.Count] : ""));
     }
 
     /// <summary>"Quay lại điểm chọn" ở màn kết cục.</summary>
@@ -85,13 +210,14 @@ public sealed class GameEngine
         return s.Pc < code.Count ? code[s.Pc] : null;
     }
 
-    public Batch Run(GameState s)
+    public Batch Run(GameState s, List<Dictionary<string, object?>>? pre = null)
     {
         lib.Refresh();
         var b = new Batch { StartState = Ser(s) };
         b.Scene = SceneOf(s);
         b.Notebook = NotebookOf(s);
         var steps = b.Steps;
+        if (pre != null) steps.AddRange(pre);
         int guard = 0;
 
         while (true)
@@ -106,10 +232,22 @@ public sealed class GameEngine
             switch (ins)
             {
                 case SayI say:
-                    steps.Add(SayStep(say)); s.Pc++; break;
+                {
+                    var sig = StageSig(s);
+                    var lit = Speak(s, say);
+                    if (StageSig(s) != sig) steps.Add(StageStep(s));
+                    var d = SayStep(say);
+                    if (lit != null) d["sp"] = lit;
+                    steps.Add(d); s.Pc++; break;
+                }
 
                 case CmdI cmd:
-                    Cmd(s, cmd, steps); s.Pc++; break;
+                {
+                    var sig = StageSig(s);
+                    Cmd(s, cmd, steps);
+                    if (StageSig(s) != sig) steps.Add(StageStep(s));
+                    s.Pc++; break;
+                }
 
                 case AddItemI it:
                     if (s.Items.All(x => x.Name != it.Name))
@@ -121,6 +259,30 @@ public sealed class GameEngine
 
                 case AddNoteI n:
                     AddNote(s, n.Name, steps); s.Pc++; break;
+
+                case RemoveItemI ri:
+                    if (s.Items.RemoveAll(x => x.Name.StartsWith(ri.Name, StringComparison.Ordinal)) > 0)
+                        steps.Add(new() { ["t"] = "unitem", ["name"] = ri.Name });
+                    s.Pc++; break;
+
+                case GotoI go:
+                    if (go.ClearStack) s.Ret.Clear();
+                    s.Pc = go.Target; break;
+
+                case CallI call:
+                    s.Ret.Add(s.Pc + 1); s.Pc = call.Target; break;
+
+                case ReturnI:
+                    if (s.Ret.Count > 0) { s.Pc = s.Ret[^1]; s.Ret.RemoveAt(s.Ret.Count - 1); }
+                    else s.Pc++;
+                    break;
+
+                case CheckpointI cp:
+                {
+                    var snap = Clone(s); snap.Checkpoints = new();
+                    s.Checkpoints[cp.Id.ToString()] = Ser(snap);
+                    s.Pc++; break;
+                }
 
                 case OpenShardI os:
                     OpenShards(s, os.Numbers, steps); s.Pc++; break;
@@ -138,7 +300,12 @@ public sealed class GameEngine
                     s.Pc = jmp.Target; break;
 
                 case SpecialI sp:
-                    Special(s, ch, sp, steps); s.Pc++; break;
+                {
+                    var sig = StageSig(s);
+                    Special(s, ch, sp, steps);
+                    if (StageSig(s) != sig) steps.Add(StageStep(s));
+                    s.Pc++; break;
+                }
 
                 case AskChoiceI ac:
                 {
@@ -153,6 +320,30 @@ public sealed class GameEngine
                     goto done;
                 }
 
+                case AskNoteI an:
+                    b.Pause = new()
+                    {
+                        ["type"] = "pick",
+                        ["options"] = NoteOptions(an, s).Select((o, k) => new Dictionary<string, object?> { ["i"] = k, ["text"] = o }).ToList(),
+                    };
+                    goto done;
+
+                case AskLinkI al:
+                    b.Pause = new()
+                    {
+                        ["type"] = "pick",
+                        ["options"] = LinkOptions(al, s).Select((o, k) => new Dictionary<string, object?> { ["i"] = k, ["text"] = o.text, ["dim"] = o.dim }).ToList(),
+                    };
+                    goto done;
+
+                case AskCallI ask:
+                    b.Pause = new()
+                    {
+                        ["type"] = "call",
+                        ["options"] = ask.Names.Select((o, k) => new Dictionary<string, object?> { ["i"] = k, ["text"] = o }).ToList(),
+                    };
+                    goto done;
+
                 case AskBattleI ab:
                 {
                     var el = Eligible(ab, s);
@@ -165,10 +356,17 @@ public sealed class GameEngine
                 }
 
                 case EndScreenI es:
+                    if (s.Stage.Count > 0 || s.Holo != null || s.Shadow != null) { s.ClearStage(); steps.Add(StageStep(s)); }
                     b.Pause = new()
                     {
                         ["type"] = "end", ["title"] = es.Title, ["lesson"] = es.Lesson,
-                        ["retry"] = ch.ChoiceIds.Select(id => new Dictionary<string, object?> { ["id"] = id, ["label"] = "Lựa chọn " + id }).ToList(),
+                        ["retry"] = RetryIds(s, ch, es).Select(id => new Dictionary<string, object?>
+                        {
+                            ["id"] = id, ["label"] = id == Compiler.BattleCheckpoint ? "Đầu trận với A.L.I.C.E" : "Lựa chọn " + id,
+                        }).ToList(),
+                        ["trend"] = TrendBlock(s),
+                        ["final"] = es.NoRetry ? FinalLayers(s) : null,
+                        ["shards"] = s.Shards.Count, ["shardsTotal"] = lib.Shards.Count,
                     };
                     goto done;
 
@@ -181,6 +379,71 @@ public sealed class GameEngine
     done:
         b.State = Ser(s);
         return b;
+    }
+
+    /// <summary>Điểm quay lại ở màn kết cục, theo quyết định trong từng file hướng dẫn dev.</summary>
+    static List<int> RetryIds(GameState s, Chapter ch, EndScreenI es)
+    {
+        List<int> ids;
+        if (es.NoRetry) ids = new();                                                            // 7/7: không có nút quay lại
+        else if (es.Title.StartsWith("KẾT CỤC 1/7")) ids = new() { 0, 1, 2 };                   // HUONG_DAN_DEV.md mục 12, điểm 9
+        else if (ch.Code.Any(x => x is CheckpointI)) ids = new() { Compiler.BattleCheckpoint };   // Chương 5 mục 14, điểm 1: về đầu Câu 1
+        else if (ch.Title.StartsWith("Chương 3") || ch.Title.StartsWith("Chương 4")) ids = new() { ch.ChoiceIds.Max() };   // về Lựa chọn 6 / Lựa chọn 9
+        else ids = ch.ChoiceIds.ToList();
+        return ids.Where(id => s.Checkpoints.ContainsKey(id.ToString())).ToList();
+    }
+
+    // ───────────────────────────────────────── khối "Lối bạn hay chọn" (HUONG_DAN_DEV_CHUONG_5.md mục 10)
+
+    static readonly string[] Trends = { "lam_dung_lenh", "long_tin", "con_so", "ngon_lua", "kiem_chung" };
+
+    static readonly Dictionary<string, string> TrendMain = new()
+    {
+        ["lam_dung_lenh"] = "Trên chặng đường này, bạn hay chọn làm cho xong việc được giao và để phần còn lại cho người có trách nhiệm. Việc được giao thường đúng. Chỗ hỏng là khi không ai còn hỏi việc ấy đang giữ cho cái gì đứng.",
+        ["long_tin"] = "Trên chặng đường này, bạn hay chọn giữ cho người ta yên lòng trước đã. Lòng người yên thì ca vẫn chạy. Nhưng cái ống không đọc được lòng người: nó mòn theo cách của nó.",
+        ["con_so"] = "Trên chặng đường này, bạn hay chọn theo phép tính: đủ hay thiếu, được hay mất bao nhiêu. Con số không nói dối. Nó chỉ không nói ai đã quyết phần nào về tay ai.",
+        ["ngon_lua"] = "Trên chặng đường này, bạn hay chọn đứng về phía người đang chịu thiệt, và làm ngay. Không có cái nóng ấy thì không ai dừng tay. Nhưng dừng tay mới là nửa đầu; nửa sau là dựng cái gì vào chỗ ấy.",
+        ["kiem_chung"] = "Trên chặng đường này, bạn hay chọn tự đi xem, tự đo, rồi mới nói. Điều bạn nói vì thế có thứ chống lưng. Nhưng biết đúng mới là một nửa; nửa kia là có bao nhiêu người cùng làm.",
+    };
+
+    static readonly Dictionary<string, string> TrendPair = new()
+    {
+        ["lam_dung_lenh+long_tin"] = "Bạn làm đúng việc, và tin người giao việc. Hai thứ ấy đỡ nhau rất êm, nên cũng khó thấy nhất lúc cả hai cùng sai.",
+        ["con_so+lam_dung_lenh"] = "Bạn làm đúng việc và tính đủ số: một ca làm không ai chê được. Câu còn thiếu là việc ấy, con số ấy, do ai đặt ra.",
+        ["lam_dung_lenh+ngon_lua"] = "Có lúc bạn làm theo, có lúc bạn gạt phăng. Đáng hỏi lại: ở chỗ nào thì bạn đổi, và cái gì làm bạn đổi.",
+        ["kiem_chung+lam_dung_lenh"] = "Bạn làm việc được giao, nhưng có đi xem trước. Từ chỗ ấy tới chỗ hỏi lại chính cái lệnh chỉ còn một bước.",
+        ["con_so+long_tin"] = "Bạn giữ lòng người và giữ sổ sách: một thành phố được giữ yên bằng đúng hai thứ ấy. Yên cho ai thì chưa có trong thứ nào.",
+        ["long_tin+ngon_lua"] = "Bạn tin người, và nóng thay cho người. Cả hai đều bắt đầu từ tấm lòng; thứ cần thêm là một cái gì đo được.",
+        ["kiem_chung+long_tin"] = "Bạn muốn người ta yên lòng, mà cũng muốn biết thật. Chỗ khó là lúc hai điều ấy không đi cùng nhau được, và bạn đã phải chọn.",
+        ["con_so+ngon_lua"] = "Bạn tính ra ai đang thiệt, rồi đứng về phía họ. Phép tính cho biết đập vào đâu; nó chưa cho biết dựng lại bằng gì.",
+        ["con_so+kiem_chung"] = "Bạn tin thứ đếm được, và tự đi đếm. Con số bạn có là số thật; việc còn lại là hỏi nó từ tay ai mà ra.",
+        ["kiem_chung+ngon_lua"] = "Bạn biết đúng, và không ngồi yên. Chỉ còn thiếu một thứ: đủ người cùng làm.",
+    };
+
+    /// <summary>Đoạn chính của khuynh hướng cao nhất; thêm câu ghép nếu khuynh hướng thứ hai có từ 2 điểm. Hòa thì lấy cái cộng gần nhất.</summary>
+    static List<string>? TrendBlock(GameState s)
+    {
+        var ranked = Trends.OrderByDescending(t => s.Var(t)).ThenByDescending(t => s.TrendOrder.LastIndexOf(t)).ToList();
+        if (s.Var(ranked[0]) <= 0) return null;
+        var l = new List<string> { TrendMain[ranked[0]] };
+        if (s.Var(ranked[1]) >= 2)
+        {
+            var key = string.Join("+", new[] { ranked[0], ranked[1] }.OrderBy(x => x, StringComparer.Ordinal));
+            if (TrendPair.TryGetValue(key, out var p)) l.Add(p);
+        }
+        return l;
+    }
+
+    /// <summary>Các lớp của hình cuối, theo thứ tự từ trong ra ngoài (HUONG_DAN_DEV_CHUONG_5.md mục 9).</summary>
+    static List<string> FinalLayers(GameState s)
+    {
+        var l = new List<string> { "KT_Kael_Me", "KT_Rian", "KT_Tho_xuong_4" };
+        if (s.Flag("tao_len") == "co") l.Add("KT_Tho_be_tao");
+        if (s.Flag("vane_len") == "co") l.Add("KT_Vane");
+        if (s.Var("tang_trung") >= 1 || s.Flag("nha_len") == "kip") l.Add("KT_Tang_Trung");
+        if (s.Flag("giu_lo") == "kip") l.Add("KT_Doran");
+        if (s.Flag("helena") == "dong_minh") l.Add("KT_Helena");
+        return l;
     }
 
     Dictionary<string, object?> ChapterEndPause(GameState s)
@@ -200,11 +463,61 @@ public sealed class GameEngine
     {
         var d = new Dictionary<string, object?> { ["t"] = "say", ["kind"] = s.Kind.ToString().ToLowerInvariant(), ["text"] = s.Text };
         if (s.Name.Length > 0) d["name"] = s.Name;
-        if (s.HideSprite) d["hs"] = true;
         if (s.Loud) d["loud"] = true;
         if (s.Whisper) d["whisper"] = true;
         if (s.WristTeal) d["teal"] = true;
         return d;
+    }
+
+    // ───────────────────────────────────────── sân khấu (HUONG_DAN_DEV_SAN_KHAU.md)
+
+    /// <summary>Ô tên trong kịch bản → tiền tố file sprite. So nguyên chữ.</summary>
+    public static readonly Dictionary<string, string> Actors = new()
+    {
+        ["Kael"] = "Kael", ["Helena"] = "Helena", ["Vane"] = "Vane", ["Rian"] = "Rian", ["Mẹ"] = "Me", ["Doran"] = "Doran",
+        ["Soren"] = "Soren", ["Ilsa"] = "Ilsa",   // Chương 5: tự lên khi nói, như Vane
+    };
+
+    /// <summary>Người phụ có bóng: ô tên → file.</summary>
+    public static readonly Dictionary<string, string> Shadows = new()
+    {
+        ["Thợ già"] = "Bong_Tho_gia", ["Thợ trẻ"] = "Bong_Tho_tre", ["Chị thợ"] = "Bong_Chi_tho",
+        ["Người gác thang"] = "Bong_Nguoi_gac_thang", ["Thợ bể tảo"] = "Bong_Tho_be_tao", ["Chị thợ tảo"] = "Bong_Chi_tho_tao",
+        // Chương 5 (HUONG_DAN_DEV_CHUONG_5.md mục 2)
+        ["Cố vấn Corvin"] = "Bong_Co_van", ["Corvin"] = "Bong_Co_van", ["Người làm thuốc"] = "Bong_Nguoi_lam_thuoc",
+        ["Thợ van"] = "Bong_Tho_van", ["Người nhà"] = "Bong_Nguoi_nha", ["Lính"] = "Bong_Linh",
+    };
+
+    static string StageSig(GameState s) =>
+        string.Join(",", s.Stage.Select(a => a.Name + "_" + a.Expr)) + "|" + s.Holo + "|" + s.Shadow;
+
+    static Dictionary<string, object?> StageView(GameState s) => new()
+    {
+        ["v"] = s.Stage.Select(a => new Dictionary<string, object?> { ["n"] = a.Name, ["e"] = a.Expr }).ToList(),
+        ["holo"] = s.Holo, ["shadow"] = s.Shadow,
+    };
+
+    static Dictionary<string, object?> StageStep(GameState s)
+    {
+        var d = StageView(s); d["t"] = "stage"; return d;
+    }
+
+    /// <summary>Người nói tự lên sân khấu; trả về thứ cần làm sáng (tiền tố sprite, "holo", "shadow") hoặc null nếu không ai bị làm tối.</summary>
+    static string? Speak(GameState s, SayI say)
+    {
+        if (say.Kind is not (SayKind.Say or SayKind.Think)) return null;   // dẫn chuyện, dòng tả, loa: không đụng sân khấu
+        if (Shadows.TryGetValue(say.Name, out var shade)) { s.Shadow = shade; return "shadow"; }
+        s.Shadow = null;   // một người khác nói: bóng lùi đi
+        if (Actors.TryGetValue(say.Name, out var who)) { s.Spoke(who); return who; }
+        if (say.Name == "Veritas" && s.Holo != null) return "holo";
+        if (say.Name == "A.L.I.C.E" && s.OnStage("ALICE") != null) return "ALICE";   // Chương 5 Cảnh 3: nó chỉ lên bằng thẻ
+        return null;
+    }
+
+    static (string name, string expr) SplitSprite(string v)
+    {
+        int k = v.IndexOf('_');
+        return k <= 0 ? (v, "Neutral") : (v[..k], v[(k + 1)..]);
     }
 
     static void Cmd(GameState s, CmdI c, List<Dictionary<string, object?>> steps)
@@ -213,15 +526,34 @@ public sealed class GameEngine
         {
             case CmdKind.Bg:
                 if (s.Elev) { s.Elev = false; steps.Add(new() { ["t"] = "elev", ["on"] = false }); }
+                s.ClearStage();   // thẻ [BG] nào cũng gỡ hết, kể cả khi trùng nền đang hiện
+                if (s.Amb != null) { s.Amb = null; steps.Add(new() { ["t"] = "amb", ["v"] = null }); }
                 s.Bg = c.Value; steps.Add(new() { ["t"] = "bg", ["v"] = c.Value }); break;
             case CmdKind.Bgm:
                 s.Bgm = c.Value; steps.Add(new() { ["t"] = "bgm", ["v"] = c.Value }); break;
             case CmdKind.Se:
-                steps.Add(new() { ["t"] = "se", ["v"] = c.Value }); break;
+                // SE07_Mua là hiệu ứng chạy lặp: phát tới thẻ [BG] kế tiếp (HUONG_DAN_DEV_CHUONG_5.md mục 7)
+                if (c.Value == "SE07_Mua") { s.Amb = c.Value; steps.Add(new() { ["t"] = "amb", ["v"] = c.Value }); }
+                else steps.Add(new() { ["t"] = "se", ["v"] = c.Value });
+                break;
             case CmdKind.Sprite:
-                s.Sprite = c.Value; steps.Add(new() { ["t"] = "spr", ["v"] = c.Value }); break;
+            {
+                var (n, e) = SplitSprite(c.Value!);
+                if (n == "Veritas") s.HoloOn(e); else s.Enter(n, e);
+                break;
+            }
+            case CmdKind.SpriteOff:
+                if (c.Value == null) s.ClearStage();
+                else if (c.Value == "Veritas") s.Holo = null;
+                else s.Leave(c.Value);
+                break;
+            case CmdKind.Expr:
+            {
+                var (n, e) = SplitSprite(c.Value!);
+                s.SetExpr(n, e); break;
+            }
             case CmdKind.SceneStart:
-                s.Sprite = null; steps.Add(new() { ["t"] = "spr", ["v"] = null }); break;
+                s.ClearStage(); break;
             case CmdKind.Card:
                 steps.Add(new() { ["t"] = "card", ["text"] = c.Value }); break;
             case CmdKind.Elevator:
@@ -235,6 +567,7 @@ public sealed class GameEngine
         if (e.Unless != null && e.Unless.Eval(s)) return;
         if (e.SetFlagValue != null) { s.Flags[e.Var] = e.SetFlagValue; return; }
         s.Add(e.Var, e.Delta);
+        if (e.Delta > 0 && Trends.Contains(e.Var)) { s.TrendOrder.Remove(e.Var); s.TrendOrder.Add(e.Var); }
         if (e.Var == "lung_lay") s.Vars[e.Var] = Math.Clamp(s.Var(e.Var), 0, s.LMax > 0 ? s.LMax : int.MaxValue);
         if (e.Var == "dao_dong") s.Vars[e.Var] = Math.Clamp(s.Var(e.Var), 0, s.DMax > 0 ? s.DMax : int.MaxValue);
         if (e.Var is "lung_lay" or "dao_dong")
@@ -246,6 +579,9 @@ public sealed class GameEngine
         if (s.Notes.Contains(name)) return;
         s.Notes.Add(name);
         if (name.StartsWith("Rian đã nghe")) s.Flags["rian_da_nghe"] = "co";
+        // Chương 3 mục 9: tấm nhãn Kael giữ ở bản trên có thêm dãy số sau đoạn "Tấm nhãn"
+        if (name.StartsWith("Tệp 4406-16"))
+            foreach (var it in s.Items.Where(x => x.Name == "Nhãn hòm thuốc" && !x.Desc.Contains("4406-16"))) it.Desc = (it.Desc + " Dãy số: 4406-16.").Trim();
         steps.Add(new() { ["t"] = "note", ["name"] = name });
     }
 
@@ -284,7 +620,7 @@ public sealed class GameEngine
                 else ket = "bat_phan";
                 s.Flags["ket_doi_chat_helena"] = ket;
                 s.Flags["giay_to"] = s.GiayTo;
-                EndBattle(s, "Helena_Neutral", steps);
+                EndBattle(s, "Helena", steps);
                 break;
             }
             case "resolve_vane":
@@ -297,19 +633,41 @@ public sealed class GameEngine
                 else if (dd >= 6) v = "chu";
                 else v = "dung_ngoai";
                 s.Flags["vane"] = v;
-                EndBattle(s, "Vane_Neutral", steps);
+                EndBattle(s, "Vane", steps);
                 break;
             }
+            case "init_c3":
+            {
+                // HUONG_DAN_DEV_CHUONG_3.md mục 3: nơi Kael đứng và người đang cầm anh khi vào Chương 3
+                bool lose = s.Flag("vane") is "chu" or "ket_cuc_som";
+                s.Flags["ban"] = s.BanTren ? "tren" : "duoi";
+                s.Flags["loi_vao"] = lose ? "D3" : s.GiayTo switch
+                {
+                    "thong_hanh" => "T1", "dac_phai" => "T2",
+                    _ => s.Flag("vane") == "dong_minh" ? "D1" : "D2",
+                };
+                s.Flags["thang_vane"] = s.Flag("vane") == "dong_minh" ? "co" : "khong";   // kết trận Vane ở Chương 2 (Chương 5 đọc lại)
+                break;
+            }
+            case "init_c4":
+                // HUONG_DAN_DEV_CHUONG_4.md mục 3: biến helena, để Chương 5 dùng
+                s.Flags["helena"] = s.Flag("ket_doi_chat_helena") switch { "thuyet_phuc" => "dong_minh", "bat_phan" => "dung_ngoai", _ => "chu" };
+                break;
+            case "c4_scene3":
+                s.Flags["lo_truoc_c3"] = s.Flag("lo") == "co" ? "co" : "khong";
+                break;
+            case "resolve_veritas":
+                s.Flags["veritas"] = s.Flag("bac_dung") == "co" && s.Flag("dieu_3") == "gan" ? "dong_hanh" : "do_du";
+                break;
             default: throw new InvalidOperationException("Lệnh đặc biệt lạ: " + sp.Name);
         }
     }
 
-    static void EndBattle(GameState s, string sprite, List<Dictionary<string, object?>> steps)
+    static void EndBattle(GameState s, string who, List<Dictionary<string, object?>> steps)
     {
         s.Bars = false;
         steps.Add(new() { ["t"] = "bars", ["on"] = false });
-        s.Sprite = sprite;   // về sprite thường ở đoạn kết
-        steps.Add(new() { ["t"] = "spr", ["v"] = sprite });
+        s.SetExpr(who, "Neutral");   // về biểu cảm thường ở đoạn kết, không đưa ai lên
     }
 
     // ───────────────────────────────────────── lựa chọn hiển thị
@@ -340,7 +698,7 @@ public sealed class GameEngine
 
     Dictionary<string, object?> SceneOf(GameState s) => new()
     {
-        ["bg"] = s.Bg, ["bgm"] = s.Bgm, ["sprite"] = s.Sprite, ["elev"] = s.Elev,
+        ["bg"] = s.Bg, ["bgm"] = s.Bgm, ["amb"] = s.Amb, ["stage"] = StageView(s), ["elev"] = s.Elev,
         ["bars"] = s.Bars, ["lmax"] = s.LMax, ["dmax"] = s.DMax,
         ["who"] = s.Chapter < lib.Chapters.Count && lib.Chapters[s.Chapter].BattleKind == "vane" ? "Vane" : "Helena",
         ["l"] = s.Var("lung_lay"), ["d"] = s.Var("dao_dong"),

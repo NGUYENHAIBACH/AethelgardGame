@@ -44,6 +44,8 @@ Kael (nghĩ): Ngày thứ bảy mươi ba nghìn. Hình như hôm qua cũng bả
 >
 > Năm mười lăm tuổi mình đỗ kỳ tuyển kỹ sư, cả khu xưởng kéo ra tiễn. Mẹ dúi cái thẻ này vào tay, bảo giữ lấy cho nhớ mình từ đâu ra.
 
+[SPRITE: Doran_Neutral]
+
 ???: "Lại ngắm cái thẻ cũ đấy à, Kael?"
 
 Kael: "Cháu chào chú Doran. Thẻ của mẹ cháu, để trong ví cho đỡ nhớ thôi."
@@ -61,6 +63,8 @@ Doran: "Mà gửi thì gửi, chứ mười một năm rồi cậu đã xuống 
 Kael: "Xuống thì dễ chú ạ. Lên lại mới khó. Chú đã thấy thang hàng chở ai lên hai lần chưa?"
 
 (Doran không trả lời. Ông quẹt thẻ rồi đi trước.)
+
+[SPRITE: Doran tắt]
 
 Kael (nghĩ): Ở trên này chỉ cần sai một lần là người ta có cớ trả mình về. Nên thôi, cứ cúi đầu mà làm cho xong việc.
 
@@ -83,6 +87,8 @@ Kael: "Tò mò thì có được thêm suất nào không chú?"
 Doran: "Không. Mất suất thì có."
 
 Kael: "Thế thì cháu không tò mò."
+
+[SPRITE: Doran tắt]
 
 [SE: SE03_Glitch_Loi_He_Thong]
 
@@ -120,11 +126,13 @@ Kael (nghĩ): Hạn thay năm 2310. Giờ là năm 2350. Trễ bốn mươi năm
 
 (Loa máy tự bật. Giọng phụ nữ, rè và đứt quãng, hát được nửa câu rồi tắt.)
 
-???: "...mưa về trên mái... con ngủ đi..." (lời hát tạm, sẽ thay khi có bài hát thật)
+???: "...mưa về trên mái... con ngủ đi..."
 
 (Kael vội vặn nhỏ loa.)
 
 Kael (nghĩ): "Mưa"? Chữ gì lạ vậy. Nghe như tên một món ăn.
+
+[SPRITE: Kael_Neutral]
 
 (Hết ca. Doran đã về. Tệp vẫn mở trên màn hình, mà theo quy định, lô chưa sạch thì kỹ sư chưa được về.)
 
@@ -144,6 +152,8 @@ Kael (nghĩ): ...Và có một cách thứ ba, không nằm trong sổ.
 
 **Nhánh 0-A**
 
+[SPRITE: Kael_Neutral]
+
 (Kael gõ lệnh cưỡng chế, ký tên. Dòng chữ đỏ nhấp nháy một lúc lâu, rồi tắt. Tệp biến mất. Lần này nó không quay lại.)
 
 Kael: "Đấy. Có gì đâu."
@@ -155,6 +165,8 @@ Dẫn chuyện: Anh về đúng giờ, ăn đúng suất, và ngủ ngon như m�
 (Ghi chú cho người làm game: tệp xóa được vì thứ đang "sử dụng" nó đã tự nhảy sang thiết bị cổ tay qua cổng đăng nhập. Chương 1 sẽ cho người chơi biết điều này.)
 
 **Nhánh 0-B**
+
+[SPRITE: Kael_Neutral]
 
 (Tệp chịu sang thiết bị cổ tay ngay lần đầu, ngoan đến lạ. Lô sạch. Kael đóng ca.)
 
@@ -187,6 +199,8 @@ Veritas: "Nhưng mai cậu đi làm kiểu gì chẳng bước qua nó. Liếc m
 Kael (nghĩ): Mình đang ngồi cãi nhau với một cái tệp rác. Hay thật.
 
 **Nhánh 0-C**
+
+[SPRITE: Kael_Neutral]
 
 (Kael gửi báo cáo lỗi. Mười phút sau, phản hồi hiện lên: "Ban Cố vấn ghi nhận. Cư dân Kael, mã 2231, không cần hành động thêm. H.")
 
