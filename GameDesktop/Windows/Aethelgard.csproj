@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Bản tải về cho Windows: một cửa sổ riêng (WebView2, có sẵn trên Windows 10/11) mở thẳng bản tĩnh trong thư mục game/.
+       Không cần cài .NET, không cần máy chủ. Máy nào thiếu WebView2 thì tự chuyển sang mở bằng trình duyệt mặc định. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Aethelgard</AssemblyName>
+    <RootNamespace>AethelgardDesktop</RootNamespace>
+    <ApplicationIcon>..\..\Game\wwwroot\favicon.ico</ApplicationIcon>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.*" />
+    <Compile Include="..\Shared\StaticServer.cs" Link="StaticServer.cs" />
+  </ItemGroup>
+
+</Project>

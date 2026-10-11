@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <!-- Bản tĩnh của game: bộ máy kịch bản (C#) chạy ngay trong trình duyệt bằng WebAssembly, không cần máy chủ.
+       Mã nguồn bộ máy và kịch bản KHÔNG chép sang đây: dự án này trỏ thẳng vào ../Game, nên sửa ở Game là bản tĩnh đổi theo. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>AethelgardGame</RootNamespace>
+    <AssemblyName>AethelgardStatic</AssemblyName>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <!-- wwwroot do build.py dựng lại mỗi lần, không cần theo dõi từng file tĩnh như một dự án Blazor thường -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.*" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Game\Models\Game\*.cs" Link="Engine\Game\%(Filename)%(Extension)" />
+    <Compile Include="..\Game\Models\Story\*.cs" Exclude="..\Game\Models\Story\StoryLibrary.cs" Link="Engine\Story\%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\Game\Story\*.md" LogicalName="Story/%(Filename)%(Extension)" />
+    <!-- giữ nguyên mọi kiểu của dự án khi cắt gọt lúc publish: bộ máy đọc và ghi JSON bằng reflection -->
+    <TrimmerRootAssembly Include="AethelgardStatic" />
+  </ItemGroup>
+
+</Project>

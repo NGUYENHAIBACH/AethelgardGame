@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Bản tải về cho Mac (và mọi máy không dùng được bản cửa sổ): một chương trình nhỏ phát thư mục game/ ngay trên máy
+       rồi mở trình duyệt mặc định vào đó. Không cần cài .NET. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Aethelgard</AssemblyName>
+    <RootNamespace>AethelgardDesktop</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\StaticServer.cs" Link="StaticServer.cs" />
+  </ItemGroup>
+
+</Project>
